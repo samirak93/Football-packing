@@ -32,36 +32,38 @@ class calculate_packing:
         else:
             return 'Side'
 
-    def method_1(self, a, b, c, d, df_m1, col_label_x, col_label_y, rect_thresh=0.1):
+    def method_1(self, box_a, box_b, box_c, box_d, df_method1, col_label_x, col_label_y, rect_thresh=0.01):
         """
-        Method 1 - Create a rectangle box between sender and receiver to see if any player 
-        is within the bounding box. A rect_thresh pf 0.1 is kept to consider players on the
+        Method 1 :
+        Draw a rectangle box between sender and receiver to see if any player 
+        is inside the bounding box. A rect_thresh of 0.01 is used to consider players on the
         edge of the box.
 
         Parameters
         ----------
-        a : ndarray
-            ['sender_x', 'sender_y']
-        b : ndarray
-            ['sender_x', 'receiver_y']
-        c : ndarray
-            ['receiver_x', 'receiver_y']
-        d : ndarray
-            ['receiver_x', 'sender_y']
-        df_m1 : DataFrame 
+        box_a : ndarray
+            A ndarray of ['sender_x', 'sender_y']
+        box_b : ndarray
+            A ndarray of ['sender_x', 'receiver_y']
+        box_c : ndarray
+            A ndarray of ['receiver_x', 'receiver_y']
+        box_d : ndarray
+            A ndarray of ['receiver_x', 'sender_y']
+        df_method1 : DataFrame 
             A copy of defending_team_xy dataframe
         col_label_x : String
-            The column label for defending team's X coordinate in defending_team_xy
+            The column label for defending team's X coordinate in `defending_team_xy`
         col_label_y : String
-            The column label for defending team's Y coordinate in defending_team_xy
-        rect_thresh : Float
+            The column label for defending team's Y coordinate in `defending_team_xy`
+        rect_thresh : Float, default 0.01
             A threshold to check if any player is outside/on the edge of the box within
             the threshold distance
 
         Returns
         ----------
-        df_m1 -- Dataframe with 1/0 for Method 1, bounding rectangle length and width
-
+        df_method1 : DataFrame 
+            A copy of original DataFrame with 1/0 for Method 1 and the following new columns :
+            `triangle_area` : Float, `rect_length` : Float, `rect_width` : Float, `method_1` : Binary
         """
         def area_triangle(s1, s2, s3):
 
@@ -73,14 +75,14 @@ class calculate_packing:
             else:
                 return np.round(area, 3)
 
-        def checkCollision(df):
+        def checkBoundary(df):
             method_1 = 0
             point_def = df[[col_label_x, col_label_y]].values.tolist()
 
-            p_a = np.linalg.norm(point_def-a)
-            p_b = np.linalg.norm(point_def-b)
-            p_c = np.linalg.norm(point_def-c)
-            p_d = np.linalg.norm(point_def-d)
+            p_a = np.linalg.norm(point_def-box_a)
+            p_b = np.linalg.norm(point_def-box_b)
+            p_c = np.linalg.norm(point_def-box_c)
+            p_d = np.linalg.norm(point_def-box_d)
 
             area_rect = np.round(ab*bc, 3)
             area_ab = area_triangle(p_a, p_b, ab)
@@ -88,10 +90,10 @@ class calculate_packing:
             area_cd = area_triangle(p_c, p_d, cd)
             area_da = area_triangle(p_d, p_a, da)
 
-            # Point lies inside the bounding box
+            # Check if player xy lies inside the bounding box
             # rect_thresh = 0.1 is for normalized data
 
-            if (area_ab + area_bc + area_cd + area_da) - area_rect < rect_thresh:
+            if (area_ab + area_bc + area_cd + area_da) - area_rect <= rect_thresh:
                 method_1 = 1
             else:
                 method_1 = 0
@@ -101,47 +103,54 @@ class calculate_packing:
                                  downcast='integer')
 
         # rectangle edges
-        ab = np.linalg.norm(a-b)
-        bc = np.linalg.norm(b-c)
-        cd = np.linalg.norm(c-d)
-        da = np.linalg.norm(d-a)
+        ab = np.linalg.norm(box_a-box_b)
+        bc = np.linalg.norm(box_b-box_c)
+        cd = np.linalg.norm(box_c-box_d)
+        da = np.linalg.norm(box_d-box_a)
 
-        df_m1[['triangle_area', 'rect_length', 'rect_width', 'method_1']
-              ] = df_m1.apply(checkCollision, axis=1)
+        df_method1[['triangle_area', 'rect_length', 'rect_width', 'method_1']
+                   ] = df_method1.apply(checkBoundary, axis=1)
 
-        return df_m1
+        return df_method1
 
-    def method_2(self, p_s, p_r, df_m2, col_label_x, col_label_y, method2_radius=0.150):
+    def method_2(self, sender_xy, receiver_xy, df_method2, col_label_x, col_label_y, method2_radius=0.150):
         """
-        Method 2 - If player is within a certain distance to line of pass so that 
-        pass can potentially be intersected ignoring the speed of the pass
+        Method 2 :
+        Check if player is within a certain distance to line of pass, so that 
+        the pass can potentially be intersected (assuming the speed of pass is not a factor).
+
+        For a given defender, assume the defender xy to be center of circle. Find the perpendicular 
+        distance from player xy to the line of pass. If the distance is <= method2_radius, then method_2
+        returns as 1, else 0.
 
         Parameters
         ----------
-        p_s : ndarray 
-            ['sender_x', 'sender_y'] values
-        p_r : ndarray 
-            ['receiver_x', 'receiver_y'] values 
-        df_m2 : DataFrame 
-            Updated dataframe from Method 1
+        sender_xy : ndarray
+            A ndarray of ['sender_x', 'sender_y']
+        receiver_xy : ndarray
+            A ndarray of ['receiver_x', 'receiver_y']
+        df_method2 : DataFrame
+            A copy of defending_team_xy dataframe, updated from `Method 1`
         radius : Float, default 0.150
             search radius for find if player can potentially intersect the pass
             by being within a given distance
 
         Returns
         ----------
-        df_m2 : DataFrame
-            Dataframe with 1/0 for Method 2
+        df_method2 : DataFrame
+            A copy of original DataFrame with 1/0 for Method 2 and the following new columns : 
+            `method2_dist` : Distance of player to line of pass,  
+            `method_2` : Binary, (1/0)
         """
 
         def check_intersection(df):
             method_2 = 0
             center = df[[col_label_x, col_label_y]].values
 
-            line = np.linalg.norm(p_r - p_s)
+            line = np.linalg.norm(receiver_xy - sender_xy)
 
-            dist = np.round(np.abs(np.cross(p_r-p_s, p_r-center)) /
-                            np.linalg.norm(p_r-p_s), 3)
+            dist = np.round(np.abs(np.cross(receiver_xy-sender_xy, receiver_xy-center)) /
+                            np.linalg.norm(receiver_xy-sender_xy), 3)
 
             if (dist <= method2_radius):
                 method_2 = 1
@@ -152,36 +161,44 @@ class calculate_packing:
                                             'method_2': method_2}),
                                  downcast='integer')
 
-        df_m2[['method2_dist', 'method_2']] = df_m2.apply(
+        df_method2[['method2_dist', 'method_2']] = df_method2.apply(
             check_intersection, axis=1)
 
-        return df_m2
+        return df_method2
 
-    def method_3(self, p_s, p_r, df_m3, col_label_x, col_label_y):
+    def method_3(self, sender_xy, receiver_xy, df_method3, col_label_x, col_label_y):
         """
-        Method 3 - Check if pass is breaking the defending players lines (angles)
+        Method 3 :
+        Check defender angle with respect to sender & receiver. 
+        One of the draw back of `method_2` is that defender can be close to line to pass 
+        but still be beyond the sender or receiver (one of angle b/w defender & sender/receiver > 90). 
+        This method filters that condition. 
 
         Parameters
         ----------
-        p_s : ndarray 
-            ['sender_x', 'sender_y']
+        sender_xy : ndarray 
+            A ndarray of ['sender_x', 'sender_y']
         p_r : ndarray 
-            ['receiver_x', 'receiver_y'] 
-        df_m3 : DataFrame 
-            Updated dataframe from Method 2
+            A ndarray of ['receiver_x', 'receiver_y'] 
+        df_method3 : DataFrame 
+            A copy of defending_team_xy dataframe, updated from `Method 2`
 
         Returns
         ----------
-        df_m3 : DataFrame 
-            Dataframe with 1/0 for Method 3
+        df_method3 : DataFrame 
+            A copy of original DataFrame with 1/0 for Method 3 and the following new columns :
+            `method3_angle_s` : Angle between defender & sender,
+            `method3_angle_r` : Angle between defender & receiver,
+            `method_3` : Binary, (1/0)
         """
         def check_lines(df):
             method_3 = 0
             center = df[[col_label_x, col_label_y]].values
 
-            d_sr = np.linalg.norm(p_s-p_r)
-            d_sd = np.linalg.norm(p_s-center)
-            d_rd = np.linalg.norm(p_r-center)
+            # Distance between sender, receiver & defender combination
+            d_sr = np.linalg.norm(sender_xy-receiver_xy)
+            d_sd = np.linalg.norm(sender_xy-center)
+            d_rd = np.linalg.norm(receiver_xy-center)
 
             angle_s = np.round(math.degrees(
                 math.acos((d_sr**2 + d_sd**2 - d_rd**2)/(2.0 * d_sr * d_sd))))
@@ -192,25 +209,27 @@ class calculate_packing:
                 method_3 = 1
             else:
                 method_3 = 0
-            return pd.to_numeric(pd.Series({'method2_angle_s': angle_s,
-                                            'method2_angle_r': angle_r,
+            return pd.to_numeric(pd.Series({'method3_angle_s': angle_s,
+                                            'method3_angle_r': angle_r,
                                             'method_3': method_3}),
                                  downcast='integer')
 
-        df_m3[['method2_angle_s', 'method2_angle_r', 'method_3']
-              ] = df_m3.apply(check_lines, axis=1)
+        df_method3[['method3_angle_s', 'method3_angle_r', 'method_3']
+                   ] = df_method3.apply(check_lines, axis=1)
 
-        return df_m3
+        return df_method3
 
     def update_method_1(self, df_update):
         """
-        Method 1 Update - Check if bounding box is almost a line i.e: either width/length <= 0.07 units
-        Then update the method_1 value to 1 if both method_2 and method_3 are 1
+        Method 1 Update :
+        For special cases where bounding box from `Method 1` is almost a line i.e: either width/length <= 0.07 units
+        (both sender and receiver are in similar X or Y coordinate).
+        In this case, update the value of method_1 value to 1 if both method_2 and method_3 are 1
 
         Parameters
         ----------
         df_update : DataFrame
-            Final dataframe after method 1,2 & 3
+            The copy of DataFrame after Methods 1,2 & 3.
 
         Returns
         ----------
@@ -220,7 +239,7 @@ class calculate_packing:
         rect_length = df_update['rect_length'].unique()[0]
         rect_width = df_update['rect_width'].unique()[0]
 
-        if (rect_length <= 0.07) and (rect_width <= 0.07):
+        if (rect_length <= 0.07) or (rect_width <= 0.07):
             df_update.loc[:, 'method_1'] = np.where(((df_update['method_1'] == 0) &
                                                      (df_update['method_2'] == 1) &
                                                      (df_update['method_3'] == 1)), 1, df_update['method_1'])
@@ -229,7 +248,8 @@ class calculate_packing:
 
     def get_pass_pressure(self, sender_xy, receiver_xy, defending_team_xy, col_label_x, col_label_y,
                           ):
-        """
+        r"""
+
         For defender who are not in the packing rate, if they are close (<=0.05 units) to the 
         sender/receiver, they're considered to be an influence on the pass, increasing the 
         pressure of the pass
@@ -240,13 +260,18 @@ class calculate_packing:
             Sender XY coordinates as numpy array
         receiver_xy : ndarray
             Receiver XY coordinates as numpy array    
-        defending_team_xy {[type]} -- [description]
-            col_label_x {[type]} -- [description]
-            col_label_y {[type]} -- [description]
+        defending_team_xy : DataFrame
+            DataFrame with the defending team coordinates
+        col_label_x : String
+            The column label for defending team's X coordinate in `defending_team_xy`
+        col_label_y : String
+            The column label for defending team's Y coordinate in `defending_team_xy`
 
         Returns
         ----------
-            Total count of defenders putting pressure on pass
+        total_pressure : Int
+            Total count of defenders applying pressure on the sender & receiver, but not involved in 
+            packing rate.
         """
         defend_xy = defending_team_xy[defending_team_xy['packing'] == 0][[
             col_label_x, col_label_y]].values
@@ -259,7 +284,9 @@ class calculate_packing:
             np.where(receiver_def_cdist[0] <= 0.05)).tolist()[0]
 
         pass_pressure_players = list(set(sender_ids) - set(receiver_ids))
-        return len(pass_pressure_players)
+        total_pressure = len(pass_pressure_players)
+
+        return total_pressure
 
 
 class packing:
@@ -275,9 +302,9 @@ class packing:
     defending_team_xy : DataFrame
         DataFrame with the defending team coordinates
     col_label_x : String
-        The column label for defending team's X coordinate in defending_team_xy
+        The column label for defending team's X coordinate in `defending_team_xy`
     col_label_y : String
-        The column label for defending team's Y coordinate in defending_team_xy
+        The column label for defending team's Y coordinate in `defending_team_xy`
     defend_side : String
         The side of the defending team on the football pitch. Left/Right
     goal_center : Dict
@@ -287,7 +314,7 @@ class packing:
     Returns
     ----------
     packing_df : DataFrame
-        Returns a dataframe with the following columns 
+        Returns a dataframe with the following new columns 
         ['triangle_area', 'rect_length', 'rect_width', 'method_1', 'method2_dist', 
         'method_2', 'method2_angle_s', 'method2_angle_r', 'method_3', 'packing', 
         col_label_x, col_label_y]
@@ -373,7 +400,8 @@ class packing:
             self.sender_xy, self.receiver_xy, self.goal_xy)
 
         self.packing_df = cp.method_1(
-            box_a, box_b, box_c, box_d, self.defending_team_xy.copy(), col_label_x=self.col_label_x, col_label_y=self.col_label_y)
+            box_a, box_b, box_c, box_d, self.defending_team_xy.copy(), col_label_x=self.col_label_x,
+            col_label_y=self.col_label_y)
 
         self.packing_df = cp.method_2(
             box_a, box_c, self.packing_df, col_label_x=self.col_label_x, col_label_y=self.col_label_y)
