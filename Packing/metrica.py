@@ -29,7 +29,12 @@ pd.set_option('display.max_rows', None)
 
 
 class metrica:
-    def __init__(self, path_play_df: str, path_event_df: str, game_id: list):
+    def __init__(
+        self,
+        path_play_df: str,
+        path_event_df: str,
+        game_id: list
+    ):
         self.path_play_df = path_play_df
         self.path_event_df = path_event_df
         self.game_id = game_id

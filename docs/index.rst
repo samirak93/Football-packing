@@ -7,9 +7,11 @@ in soccer. This is a variation of the metric created by `Impect <https://www.imp
 
 .. toctree::
    :maxdepth: 2
+   :caption: Table of Contents
+   :name: mastertoc
 
    misc/install
    misc/modules
    misc/examples
-   misc/disclaimer
+
 

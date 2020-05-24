@@ -224,7 +224,7 @@ class calculate_packing:
         Method 1 Update :
         For special cases where bounding box from `Method 1` is almost a line i.e: either width/length <= 0.07 units
         (both sender and receiver are in similar X or Y coordinate).
-        In this case, update the value of method_1 value to 1 if both method_2 and method_3 are 1
+        In this case, update the value of method_1 value to 1 if both method_2 and method_3 are 1.
 
         Parameters
         ----------
@@ -248,11 +248,10 @@ class calculate_packing:
 
     def get_pass_pressure(self, sender_xy, receiver_xy, defending_team_xy, col_label_x, col_label_y,
                           ):
-        r"""
-
+        """
         For defender who are not in the packing rate, if they are close (<=0.05 units) to the 
-        sender/receiver, they're considered to be an influence on the pass, increasing the 
-        pressure of the pass
+        sender/receiver, they're considered to have an influence on the pass by increasing the 
+        pressure of the pass.
 
         Parameters
         ----------
@@ -314,10 +313,12 @@ class packing:
     Returns
     ----------
     packing_df : DataFrame
-        Returns a dataframe with the following new columns 
-        ['triangle_area', 'rect_length', 'rect_width', 'method_1', 'method2_dist', 
-        'method_2', 'method2_angle_s', 'method2_angle_r', 'method_3', 'packing', 
-        col_label_x, col_label_y]
+        Returns a dataframe with the following new columns along with existing columns 
+        that was provided.
+        New Columns : 
+        [`triangle_area`, `rect_length`, `rect_width`, `method_1`, `method2_dist`, 
+        `method_2`, `method2_angle_s`, `method2_angle_r`, `method_3`, `packing`, 
+        `col_label_x`, `col_label_y`]
     packing_rate : Float
         Packing rate for that given pass scenario
         Packing rate will be multiplied by a factor based on the pass type:

@@ -117,9 +117,8 @@ class plot_packing():
             f"Plot successfully saved at {self.path+'/plots/'+self.file_name+'.html'}")
 
     def plot(self):
-        """
-        Creating plot to visualize
-        """
+
+        # Plot the visualization
         pass_team_cols = self.passer_team_df.columns.tolist()
         defend_team_cols = self.packing_df.columns.tolist()
         if len(pass_team_cols) < 3:

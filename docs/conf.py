@@ -23,6 +23,7 @@ author = 'Samira Kumar'
 release = '0.1'
 
 sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../Packing'))
 
 # -- General configuration ---------------------------------------------------
 
@@ -31,10 +32,9 @@ sys.path.insert(0, os.path.abspath('..'))
 # ones.
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.coverage',
-              'sphinx.ext.napoleon',
-              'sphinx.ext.autosummary',
               'sphinx.ext.viewcode',
-              'sphinx.ext.autosectionlabel']
+              'sphinx.ext.autosectionlabel',
+              'numpydoc']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -57,12 +57,23 @@ html_theme_options = {'source_link_position': "none",
                       'bootstrap_version': "3",
                       'navbar_sidebarrel': False,
                       'navbar_links': [
+                          ("Usage & Examples", "misc/examples"),
                           ("About", "misc/disclaimer"),
                       ],
                       }
-html_sidebars = {'**': ['localtoc.html', 'searchbox.html']}
+
+# Sidebar
+html_sidebars = {'**': ['localtoc.html', 'searchbox.html'],
+                 'collapse': True}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+
+def setup(app):
+    app.add_css_file("custom.css")
+
+
+exclude_patterns = ['misc/disclaimer.rst']

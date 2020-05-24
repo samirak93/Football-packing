@@ -40,7 +40,11 @@ class belgium:
             plot (figure) -- matplotlib figure with player location and packing rate
     """
 
-    def __init__(self, df, play_id):
+    def __init__(
+        self,
+        df,
+        play_id
+    ):
         self.df = df
         self.play_id = play_id
         self.defend_side = ""
