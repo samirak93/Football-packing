@@ -111,7 +111,7 @@ class plot_packing():
         save()
             plot save to the output_file path 
         """
-        show(plot)
+        # show(plot)
         save(plot)
         print(
             f"Plot successfully saved at {self.path+'/plots/'+self.file_name+'.html'}")

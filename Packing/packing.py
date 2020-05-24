@@ -13,17 +13,24 @@ class calculate_packing:
     def __init__(self):
         self.packing_rate = 0
 
-    def get_pass_direction(self, sender, receiver, goal):
+    def get_pass_direction(self, sender, receiver, goal, defend_side):
         """
         Get Pass Direction
 
-        Returns: 
+        Returns:
             Forward/Back/Side
         """
+        if defend_side == 'left':
+            goal_sender = [0, sender[1]]
+            goal_receiver = [0, receiver[1]]
+        elif defend_side == 'right':
+            goal_sender = [1, sender[1]]
+            goal_receiver = [1, receiver[1]]
+
         # Distance of 3 sides sender-receiver-goal triangle
-        d_sg = np.round(np.linalg.norm(sender-goal), 3)
+        d_sg = np.round(np.linalg.norm(sender-goal_sender), 3)
         d_rg = np.round(np.linalg.norm(
-            receiver-goal), 3)
+            receiver-goal_receiver), 3)
 
         if (d_rg < d_sg) and (np.abs(d_rg-d_sg) > 0.02):
             return 'Forward'
@@ -32,10 +39,10 @@ class calculate_packing:
         else:
             return 'Side'
 
-    def method_1(self, box_a, box_b, box_c, box_d, df_method1, col_label_x, col_label_y, rect_thresh=0.01):
+    def method_1(self, box_a, box_b, box_c, box_d, df_method1, col_label_x, col_label_y, rect_thresh=0.02):
         """
         Method 1 :
-        Draw a rectangle box between sender and receiver to see if any player 
+        Draw a rectangle box between sender and receiver to see if any player
         is inside the bounding box. A rect_thresh of 0.01 is used to consider players on the
         edge of the box.
 
@@ -49,7 +56,7 @@ class calculate_packing:
             A ndarray of ['receiver_x', 'receiver_y']
         box_d : ndarray
             A ndarray of ['receiver_x', 'sender_y']
-        df_method1 : DataFrame 
+        df_method1 : DataFrame
             A copy of defending_team_xy dataframe
         col_label_x : String
             The column label for defending team's X coordinate in `defending_team_xy`
@@ -61,7 +68,7 @@ class calculate_packing:
 
         Returns
         ----------
-        df_method1 : DataFrame 
+        df_method1 : DataFrame
             A copy of original DataFrame with 1/0 for Method 1 and the following new columns :
             `triangle_area` : Float, `rect_length` : Float, `rect_width` : Float, `method_1` : Binary
         """
@@ -113,13 +120,13 @@ class calculate_packing:
 
         return df_method1
 
-    def method_2(self, sender_xy, receiver_xy, df_method2, col_label_x, col_label_y, method2_radius=0.150):
+    def method_2(self, sender_xy, receiver_xy, df_method2, col_label_x, col_label_y, method2_radius=0.15):
         """
         Method 2 :
-        Check if player is within a certain distance to line of pass, so that 
+        Check if player is within a certain distance to line of pass, so that
         the pass can potentially be intersected (assuming the speed of pass is not a factor).
 
-        For a given defender, assume the defender xy to be center of circle. Find the perpendicular 
+        For a given defender, assume the defender xy to be center of circle. Find the perpendicular
         distance from player xy to the line of pass. If the distance is <= method2_radius, then method_2
         returns as 1, else 0.
 
@@ -138,26 +145,47 @@ class calculate_packing:
         Returns
         ----------
         df_method2 : DataFrame
-            A copy of original DataFrame with 1/0 for Method 2 and the following new columns : 
-            `method2_dist` : Distance of player to line of pass,  
+            A copy of original DataFrame with 1/0 for Method 2 and the following new columns :
+            `method2_dist` : Distance of player to line of pass,
             `method_2` : Binary, (1/0)
         """
 
         def check_intersection(df):
+            """
+            If rectangle from method_1 is big enough ((rect_length > 0.07) or (rect_width > 0.07)), 
+            take a diagonal (non player) side of the rectangle and find the perpendicular distance 
+            between it and the line of pass. If a defending player is within that distance to the 
+            line of pass, then method_2 = 1.
+
+            If rectangle is small, then use method2_radius to check if a defending player
+            is within that distance to the line of pass.
+            """
             method_2 = 0
+
+            # Defender point
             center = df[[col_label_x, col_label_y]].values
+            dist_dl = np.round(np.abs(np.cross(receiver_xy-sender_xy, sender_xy-center)) /
+                               np.linalg.norm(receiver_xy-sender_xy), 3)
 
-            line = np.linalg.norm(receiver_xy - sender_xy)
+            # Box diagonal
+            box_diagonal = np.array([sender_xy[0], receiver_xy[1]])
+            dist_box_line = np.round(np.abs(np.cross(receiver_xy-sender_xy, sender_xy-box_diagonal)) /
+                                     np.linalg.norm(receiver_xy-sender_xy), 3)
 
-            dist = np.round(np.abs(np.cross(receiver_xy-sender_xy, receiver_xy-center)) /
-                            np.linalg.norm(receiver_xy-sender_xy), 3)
+            rect_length = df['rect_length']
+            rect_width = df['rect_width']
 
-            if (dist <= method2_radius):
+            if (rect_length <= 0.07) or (rect_width <= 0.07):
+                if (dist_dl <= method2_radius):
+                    method_2 = 1
+                else:
+                    method_2 = 0
+            elif dist_dl <= dist_box_line:
                 method_2 = 1
             else:
                 method_2 = 0
 
-            return pd.to_numeric(pd.Series({'method2_dist': dist,
+            return pd.to_numeric(pd.Series({'method2_dist': dist_dl,
                                             'method_2': method_2}),
                                  downcast='integer')
 
@@ -169,29 +197,29 @@ class calculate_packing:
     def method_3(self, sender_xy, receiver_xy, df_method3, col_label_x, col_label_y):
         """
         Method 3 :
-        Check defender angle with respect to sender & receiver. 
-        One of the draw back of `method_2` is that defender can be close to line to pass 
-        but still be beyond the sender or receiver (one of angle b/w defender & sender/receiver > 90). 
-        This method filters that condition. 
+        Check defender angle with respect to sender & receiver.
+        One of the draw back of `method_2` is that defender can be close to line to pass
+        but still be beyond the sender or receiver (one of angle b/w defender & sender/receiver > 90).
+        This method filters that condition.
 
         Parameters
         ----------
-        sender_xy : ndarray 
+        sender_xy : ndarray
             A ndarray of ['sender_x', 'sender_y']
-        p_r : ndarray 
-            A ndarray of ['receiver_x', 'receiver_y'] 
-        df_method3 : DataFrame 
+        p_r : ndarray
+            A ndarray of ['receiver_x', 'receiver_y']
+        df_method3 : DataFrame
             A copy of defending_team_xy dataframe, updated from `Method 2`
 
         Returns
         ----------
-        df_method3 : DataFrame 
+        df_method3 : DataFrame
             A copy of original DataFrame with 1/0 for Method 3 and the following new columns :
             `method3_angle_s` : Angle between defender & sender,
             `method3_angle_r` : Angle between defender & receiver,
             `method_3` : Binary, (1/0)
         """
-        def check_lines(df):
+        def check_angles(df):
             method_3 = 0
             center = df[[col_label_x, col_label_y]].values
 
@@ -215,7 +243,7 @@ class calculate_packing:
                                  downcast='integer')
 
         df_method3[['method3_angle_s', 'method3_angle_r', 'method_3']
-                   ] = df_method3.apply(check_lines, axis=1)
+                   ] = df_method3.apply(check_angles, axis=1)
 
         return df_method3
 
@@ -246,19 +274,18 @@ class calculate_packing:
 
         return df_update
 
-    def get_pass_pressure(self, sender_xy, receiver_xy, defending_team_xy, col_label_x, col_label_y,
-                          ):
+    def get_pass_pressure(self, sender_xy, receiver_xy, defending_team_xy, col_label_x, col_label_y):
         """
-        For defender who are not in the packing rate, if they are close (<=0.05 units) to the 
-        sender/receiver, they're considered to have an influence on the pass by increasing the 
+        For defender who are not in the packing rate, if they are close (<=0.05 units) to the
+        sender/receiver, they're considered to have an influence on the pass by increasing the
         pressure of the pass.
 
         Parameters
         ----------
-        sender_xy : ndarray 
+        sender_xy : ndarray
             Sender XY coordinates as numpy array
         receiver_xy : ndarray
-            Receiver XY coordinates as numpy array    
+            Receiver XY coordinates as numpy array
         defending_team_xy : DataFrame
             DataFrame with the defending team coordinates
         col_label_x : String
@@ -269,7 +296,7 @@ class calculate_packing:
         Returns
         ----------
         total_pressure : Int
-            Total count of defenders applying pressure on the sender & receiver, but not involved in 
+            Total count of defenders applying pressure on the sender & receiver, but not involved in
             packing rate.
         """
         defend_xy = defending_team_xy[defending_team_xy['packing'] == 0][[
@@ -278,11 +305,12 @@ class calculate_packing:
         receiver_def_cdist = distance.cdist(receiver_xy, defend_xy)
 
         sender_ids = np.array(
-            np.where(sender_def_cdist[0] <= 0.05)).tolist()[0]
+            np.where(sender_def_cdist[0] <= 0.1)).tolist()[0]
         receiver_ids = np.array(
-            np.where(receiver_def_cdist[0] <= 0.05)).tolist()[0]
+            np.where(receiver_def_cdist[0] <= 0.1)).tolist()[0]
 
-        pass_pressure_players = list(set(sender_ids) - set(receiver_ids))
+        pass_pressure_players = list(
+            set(sender_ids).symmetric_difference(set(receiver_ids)))
         total_pressure = len(pass_pressure_players)
 
         return total_pressure
@@ -305,7 +333,7 @@ class packing:
     col_label_y : String
         The column label for defending team's Y coordinate in `defending_team_xy`
     defend_side : String
-        The side of the defending team on the football pitch. Left/Right
+        The side of the defending team on the football pitch. Left/Right, `not case sensitive`
     goal_center : Dict
         Center of goal, based on defend_side
         {'left': [-5250, 0], 'right': [5250, 0]} - Rescaled later
@@ -313,11 +341,11 @@ class packing:
     Returns
     ----------
     packing_df : DataFrame
-        Returns a dataframe with the following new columns along with existing columns 
+        Returns a dataframe with the following new columns along with existing columns
         that was provided.
-        New Columns : 
-        [`triangle_area`, `rect_length`, `rect_width`, `method_1`, `method2_dist`, 
-        `method_2`, `method2_angle_s`, `method2_angle_r`, `method_3`, `packing`, 
+        New Columns :
+        [`triangle_area`, `rect_length`, `rect_width`, `method_1`, `method2_dist`,
+        `method_2`, `method2_angle_s`, `method2_angle_r`, `method_3`, `packing`,
         `col_label_x`, `col_label_y`]
     packing_rate : Float
         Packing rate for that given pass scenario
@@ -326,10 +354,10 @@ class packing:
         -1.0 : Back Pass
         0.5 : Side pass
     pass_pressure : Integer
-        Defending players who are closer to sender/receiver but not involved in 
-        packing. Indicator to see if players take high risk pass. 
+        Defending players who are closer to sender/receiver but not involved in
+        packing. Indicator to see if players take high risk pass.
         For eg: packing rate could be lower but pass pressure can be higher if pass
-        sender/receiver are heavily marked. 
+        sender/receiver are heavily marked.
 
     """
 
@@ -347,7 +375,7 @@ class packing:
         self.defending_team_xy = defending_team_xy.copy()
         self.col_label_x = col_label_x
         self.col_label_y = col_label_y
-        self.defend_side = defend_side
+        self.defend_side = defend_side.lower()
         self.goal_center = {'left': [-5250, 0], 'right': [5250, 0]}
         self.pass_pressure = None
 
@@ -398,7 +426,7 @@ class packing:
         cp = calculate_packing()
 
         self.pass_direction = cp.get_pass_direction(
-            self.sender_xy, self.receiver_xy, self.goal_xy)
+            self.sender_xy, self.receiver_xy, self.goal_xy, self.defend_side)
 
         self.packing_df = cp.method_1(
             box_a, box_b, box_c, box_d, self.defending_team_xy.copy(), col_label_x=self.col_label_x,
@@ -437,3 +465,10 @@ class packing:
             self.col_label_y] = defending_team_xy_unscaled[:, 0], defending_team_xy_unscaled[:, 1]
 
         return self.packing_df, self.packing_rate, self.pass_pressure
+
+
+# %%
+# set([6]) - set ([])
+set([6, 5, 4]).symmetric_difference(set([5, 6, 4, 7]))
+
+# %%

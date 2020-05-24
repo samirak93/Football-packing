@@ -28,6 +28,7 @@ defending players is within that space.
 
 :code:`Method 1` gets a final update based on a specific condition as mentioned 
 :ref:`in this section.<Method 1 - Update>`
+
 |
 
 Method 1

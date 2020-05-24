@@ -21,7 +21,6 @@ import random
 # Import custom packages
 
 from packing import packing, calculate_packing
-from team_shape import team_shape
 from plot_packing import plot_packing
 
 pd.set_option('display.max_rows', 120)
@@ -225,7 +224,6 @@ class metrica:
 
         self.get_defend_side(defending_team_xy, passing_team_xy)
 
-        print(defending_team_xy)
         pack = packing(sender_xy, receiver_xy,
                        defending_team_xy, col_label_x='x', col_label_y='y', defend_side=self.defend_side)
         self.packing_df, self.packing_rate, self.pass_pressure = pack.get_packing()
@@ -233,7 +231,7 @@ class metrica:
         plot = plot_packing(passer_team_df=passing_team_xy, packing_df=self.packing_df, col_label_x='x', col_label_y='y',
                             packing_rate=self.packing_rate,  pass_pressure=self.pass_pressure,
                             sender_xy=sender_xy, receiver_xy=receiver_xy,
-                            x_range=[0, 1], y_range=[1, 0], pass_frame=random_start_frame, file_name='metrica', plot_hint='off')
+                            x_range=[0, 1], y_range=[1, 0], pass_frame=random_end_frame, file_name='metrica', plot_hint='off')
 
         plot.plot()
 

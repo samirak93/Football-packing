@@ -126,17 +126,24 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">packing_rate</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="k">def</span> <span class="nf">get_pass_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">receiver</span><span class="p">,</span> <span class="n">goal</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_pass_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">receiver</span><span class="p">,</span> <span class="n">goal</span><span class="p">,</span> <span class="n">defend_side</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get Pass Direction</span>
 
-<span class="sd">        Returns: </span>
+<span class="sd">        Returns:</span>
 <span class="sd">            Forward/Back/Side</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">defend_side</span> <span class="o">==</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span>
+            <span class="n">goal_sender</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">sender</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">goal_receiver</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">receiver</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="n">defend_side</span> <span class="o">==</span> <span class="s1">&#39;right&#39;</span><span class="p">:</span>
+            <span class="n">goal_sender</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">sender</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">goal_receiver</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">receiver</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+
         <span class="c1"># Distance of 3 sides sender-receiver-goal triangle</span>
-        <span class="n">d_sg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">sender</span><span class="o">-</span><span class="n">goal</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">d_sg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">sender</span><span class="o">-</span><span class="n">goal_sender</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
         <span class="n">d_rg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span>
-            <span class="n">receiver</span><span class="o">-</span><span class="n">goal</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="n">receiver</span><span class="o">-</span><span class="n">goal_receiver</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="n">d_rg</span> <span class="o">&lt;</span> <span class="n">d_sg</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">d_rg</span><span class="o">-</span><span class="n">d_sg</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.02</span><span class="p">):</span>
             <span class="k">return</span> <span class="s1">&#39;Forward&#39;</span>
@@ -145,10 +152,10 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s1">&#39;Side&#39;</span>
 
-    <span class="k">def</span> <span class="nf">method_1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box_a</span><span class="p">,</span> <span class="n">box_b</span><span class="p">,</span> <span class="n">box_c</span><span class="p">,</span> <span class="n">box_d</span><span class="p">,</span> <span class="n">df_method1</span><span class="p">,</span> <span class="n">col_label_x</span><span class="p">,</span> <span class="n">col_label_y</span><span class="p">,</span> <span class="n">rect_thresh</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">method_1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box_a</span><span class="p">,</span> <span class="n">box_b</span><span class="p">,</span> <span class="n">box_c</span><span class="p">,</span> <span class="n">box_d</span><span class="p">,</span> <span class="n">df_method1</span><span class="p">,</span> <span class="n">col_label_x</span><span class="p">,</span> <span class="n">col_label_y</span><span class="p">,</span> <span class="n">rect_thresh</span><span class="o">=</span><span class="mf">0.02</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method 1 :</span>
-<span class="sd">        Draw a rectangle box between sender and receiver to see if any player </span>
+<span class="sd">        Draw a rectangle box between sender and receiver to see if any player</span>
 <span class="sd">        is inside the bounding box. A rect_thresh of 0.01 is used to consider players on the</span>
 <span class="sd">        edge of the box.</span>
 
@@ -162,7 +169,7 @@
 <span class="sd">            A ndarray of [&#39;receiver_x&#39;, &#39;receiver_y&#39;]</span>
 <span class="sd">        box_d : ndarray</span>
 <span class="sd">            A ndarray of [&#39;receiver_x&#39;, &#39;sender_y&#39;]</span>
-<span class="sd">        df_method1 : DataFrame </span>
+<span class="sd">        df_method1 : DataFrame</span>
 <span class="sd">            A copy of defending_team_xy dataframe</span>
 <span class="sd">        col_label_x : String</span>
 <span class="sd">            The column label for defending team&#39;s X coordinate in `defending_team_xy`</span>
@@ -174,7 +181,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        ----------</span>
-<span class="sd">        df_method1 : DataFrame </span>
+<span class="sd">        df_method1 : DataFrame</span>
 <span class="sd">            A copy of original DataFrame with 1/0 for Method 1 and the following new columns :</span>
 <span class="sd">            `triangle_area` : Float, `rect_length` : Float, `rect_width` : Float, `method_1` : Binary</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -226,13 +233,13 @@
 
         <span class="k">return</span> <span class="n">df_method1</span>
 
-    <span class="k">def</span> <span class="nf">method_2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender_xy</span><span class="p">,</span> <span class="n">receiver_xy</span><span class="p">,</span> <span class="n">df_method2</span><span class="p">,</span> <span class="n">col_label_x</span><span class="p">,</span> <span class="n">col_label_y</span><span class="p">,</span> <span class="n">method2_radius</span><span class="o">=</span><span class="mf">0.150</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">method_2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender_xy</span><span class="p">,</span> <span class="n">receiver_xy</span><span class="p">,</span> <span class="n">df_method2</span><span class="p">,</span> <span class="n">col_label_x</span><span class="p">,</span> <span class="n">col_label_y</span><span class="p">,</span> <span class="n">method2_radius</span><span class="o">=</span><span class="mf">0.15</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method 2 :</span>
-<span class="sd">        Check if player is within a certain distance to line of pass, so that </span>
+<span class="sd">        Check if player is within a certain distance to line of pass, so that</span>
 <span class="sd">        the pass can potentially be intersected (assuming the speed of pass is not a factor).</span>
 
-<span class="sd">        For a given defender, assume the defender xy to be center of circle. Find the perpendicular </span>
+<span class="sd">        For a given defender, assume the defender xy to be center of circle. Find the perpendicular</span>
 <span class="sd">        distance from player xy to the line of pass. If the distance is &lt;= method2_radius, then method_2</span>
 <span class="sd">        returns as 1, else 0.</span>
 
@@ -251,8 +258,8 @@
 <span class="sd">        Returns</span>
 <span class="sd">        ----------</span>
 <span class="sd">        df_method2 : DataFrame</span>
-<span class="sd">            A copy of original DataFrame with 1/0 for Method 2 and the following new columns : </span>
-<span class="sd">            `method2_dist` : Distance of player to line of pass,  </span>
+<span class="sd">            A copy of original DataFrame with 1/0 for Method 2 and the following new columns :</span>
+<span class="sd">            `method2_dist` : Distance of player to line of pass,</span>
 <span class="sd">            `method_2` : Binary, (1/0)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -282,29 +289,29 @@
     <span class="k">def</span> <span class="nf">method_3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender_xy</span><span class="p">,</span> <span class="n">receiver_xy</span><span class="p">,</span> <span class="n">df_method3</span><span class="p">,</span> <span class="n">col_label_x</span><span class="p">,</span> <span class="n">col_label_y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method 3 :</span>
-<span class="sd">        Check defender angle with respect to sender &amp; receiver. </span>
-<span class="sd">        One of the draw back of `method_2` is that defender can be close to line to pass </span>
-<span class="sd">        but still be beyond the sender or receiver (one of angle b/w defender &amp; sender/receiver &gt; 90). </span>
-<span class="sd">        This method filters that condition. </span>
+<span class="sd">        Check defender angle with respect to sender &amp; receiver.</span>
+<span class="sd">        One of the draw back of `method_2` is that defender can be close to line to pass</span>
+<span class="sd">        but still be beyond the sender or receiver (one of angle b/w defender &amp; sender/receiver &gt; 90).</span>
+<span class="sd">        This method filters that condition.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        sender_xy : ndarray </span>
+<span class="sd">        sender_xy : ndarray</span>
 <span class="sd">            A ndarray of [&#39;sender_x&#39;, &#39;sender_y&#39;]</span>
-<span class="sd">        p_r : ndarray </span>
-<span class="sd">            A ndarray of [&#39;receiver_x&#39;, &#39;receiver_y&#39;] </span>
-<span class="sd">        df_method3 : DataFrame </span>
+<span class="sd">        p_r : ndarray</span>
+<span class="sd">            A ndarray of [&#39;receiver_x&#39;, &#39;receiver_y&#39;]</span>
+<span class="sd">        df_method3 : DataFrame</span>
 <span class="sd">            A copy of defending_team_xy dataframe, updated from `Method 2`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        ----------</span>
-<span class="sd">        df_method3 : DataFrame </span>
+<span class="sd">        df_method3 : DataFrame</span>
 <span class="sd">            A copy of original DataFrame with 1/0 for Method 3 and the following new columns :</span>
 <span class="sd">            `method3_angle_s` : Angle between defender &amp; sender,</span>
 <span class="sd">            `method3_angle_r` : Angle between defender &amp; receiver,</span>
 <span class="sd">            `method_3` : Binary, (1/0)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">def</span> <span class="nf">check_lines</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">check_angles</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
             <span class="n">method_3</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">center</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="n">col_label_x</span><span class="p">,</span> <span class="n">col_label_y</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span>
 
@@ -318,6 +325,8 @@
             <span class="n">angle_r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span>
                 <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">((</span><span class="n">d_sr</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">d_rd</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">d_sd</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">d_sr</span> <span class="o">*</span> <span class="n">d_rd</span><span class="p">))))</span>
 
+            <span class="c1"># print(f&#39;{df.defend_team_id}, {angle_s}, {angle_r}&#39;)</span>
+
             <span class="k">if</span> <span class="p">(</span><span class="n">angle_s</span> <span class="o">&lt;=</span> <span class="mf">90.0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">angle_r</span> <span class="o">&lt;=</span> <span class="mf">90.0</span><span class="p">):</span>
                 <span class="n">method_3</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">else</span><span class="p">:</span>
@@ -328,7 +337,7 @@
                                  <span class="n">downcast</span><span class="o">=</span><span class="s1">&#39;integer&#39;</span><span class="p">)</span>
 
         <span class="n">df_method3</span><span class="p">[[</span><span class="s1">&#39;method3_angle_s&#39;</span><span class="p">,</span> <span class="s1">&#39;method3_angle_r&#39;</span><span class="p">,</span> <span class="s1">&#39;method_3&#39;</span><span class="p">]</span>
-                   <span class="p">]</span> <span class="o">=</span> <span class="n">df_method3</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">check_lines</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                   <span class="p">]</span> <span class="o">=</span> <span class="n">df_method3</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">check_angles</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">df_method3</span>
 
@@ -357,21 +366,23 @@
                                                      <span class="p">(</span><span class="n">df_update</span><span class="p">[</span><span class="s1">&#39;method_2&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span>
                                                      <span class="p">(</span><span class="n">df_update</span><span class="p">[</span><span class="s1">&#39;method_3&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">df_update</span><span class="p">[</span><span class="s1">&#39;method_1&#39;</span><span class="p">])</span>
 
+        <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(((</span><span class="n">df_update</span><span class="p">[</span><span class="s1">&#39;method_1&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span>
+                        <span class="p">(</span><span class="n">df_update</span><span class="p">[</span><span class="s1">&#39;method_2&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span>
+                        <span class="p">(</span><span class="n">df_update</span><span class="p">[</span><span class="s1">&#39;method_3&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">df_update</span><span class="p">[</span><span class="s1">&#39;method_1&#39;</span><span class="p">]))</span>
         <span class="k">return</span> <span class="n">df_update</span>
 
-    <span class="k">def</span> <span class="nf">get_pass_pressure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender_xy</span><span class="p">,</span> <span class="n">receiver_xy</span><span class="p">,</span> <span class="n">defending_team_xy</span><span class="p">,</span> <span class="n">col_label_x</span><span class="p">,</span> <span class="n">col_label_y</span><span class="p">,</span>
-                          <span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_pass_pressure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender_xy</span><span class="p">,</span> <span class="n">receiver_xy</span><span class="p">,</span> <span class="n">defending_team_xy</span><span class="p">,</span> <span class="n">col_label_x</span><span class="p">,</span> <span class="n">col_label_y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        For defender who are not in the packing rate, if they are close (&lt;=0.05 units) to the </span>
-<span class="sd">        sender/receiver, they&#39;re considered to have an influence on the pass by increasing the </span>
+<span class="sd">        For defender who are not in the packing rate, if they are close (&lt;=0.05 units) to the</span>
+<span class="sd">        sender/receiver, they&#39;re considered to have an influence on the pass by increasing the</span>
 <span class="sd">        pressure of the pass.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        sender_xy : ndarray </span>
+<span class="sd">        sender_xy : ndarray</span>
 <span class="sd">            Sender XY coordinates as numpy array</span>
 <span class="sd">        receiver_xy : ndarray</span>
-<span class="sd">            Receiver XY coordinates as numpy array    </span>
+<span class="sd">            Receiver XY coordinates as numpy array</span>
 <span class="sd">        defending_team_xy : DataFrame</span>
 <span class="sd">            DataFrame with the defending team coordinates</span>
 <span class="sd">        col_label_x : String</span>
@@ -382,7 +393,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        ----------</span>
 <span class="sd">        total_pressure : Int</span>
-<span class="sd">            Total count of defenders applying pressure on the sender &amp; receiver, but not involved in </span>
+<span class="sd">            Total count of defenders applying pressure on the sender &amp; receiver, but not involved in</span>
 <span class="sd">            packing rate.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">defend_xy</span> <span class="o">=</span> <span class="n">defending_team_xy</span><span class="p">[</span><span class="n">defending_team_xy</span><span class="p">[</span><span class="s1">&#39;packing&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">][[</span>
@@ -391,11 +402,12 @@
         <span class="n">receiver_def_cdist</span> <span class="o">=</span> <span class="n">distance</span><span class="o">.</span><span class="n">cdist</span><span class="p">(</span><span class="n">receiver_xy</span><span class="p">,</span> <span class="n">defend_xy</span><span class="p">)</span>
 
         <span class="n">sender_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sender_def_cdist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.05</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sender_def_cdist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.1</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">receiver_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">receiver_def_cdist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.05</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">receiver_def_cdist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.1</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="n">pass_pressure_players</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">sender_ids</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">receiver_ids</span><span class="p">))</span>
+        <span class="n">pass_pressure_players</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="nb">set</span><span class="p">(</span><span class="n">sender_ids</span><span class="p">)</span><span class="o">.</span><span class="n">symmetric_difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">receiver_ids</span><span class="p">)))</span>
         <span class="n">total_pressure</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pass_pressure_players</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">total_pressure</span>
@@ -418,7 +430,7 @@
 <span class="sd">    col_label_y : String</span>
 <span class="sd">        The column label for defending team&#39;s Y coordinate in `defending_team_xy`</span>
 <span class="sd">    defend_side : String</span>
-<span class="sd">        The side of the defending team on the football pitch. Left/Right</span>
+<span class="sd">        The side of the defending team on the football pitch. Left/Right, `not case sensitive`</span>
 <span class="sd">    goal_center : Dict</span>
 <span class="sd">        Center of goal, based on defend_side</span>
 <span class="sd">        {&#39;left&#39;: [-5250, 0], &#39;right&#39;: [5250, 0]} - Rescaled later</span>
@@ -426,11 +438,11 @@
 <span class="sd">    Returns</span>
 <span class="sd">    ----------</span>
 <span class="sd">    packing_df : DataFrame</span>
-<span class="sd">        Returns a dataframe with the following new columns along with existing columns </span>
+<span class="sd">        Returns a dataframe with the following new columns along with existing columns</span>
 <span class="sd">        that was provided.</span>
-<span class="sd">        New Columns : </span>
-<span class="sd">        [`triangle_area`, `rect_length`, `rect_width`, `method_1`, `method2_dist`, </span>
-<span class="sd">        `method_2`, `method2_angle_s`, `method2_angle_r`, `method_3`, `packing`, </span>
+<span class="sd">        New Columns :</span>
+<span class="sd">        [`triangle_area`, `rect_length`, `rect_width`, `method_1`, `method2_dist`,</span>
+<span class="sd">        `method_2`, `method2_angle_s`, `method2_angle_r`, `method_3`, `packing`,</span>
 <span class="sd">        `col_label_x`, `col_label_y`]</span>
 <span class="sd">    packing_rate : Float</span>
 <span class="sd">        Packing rate for that given pass scenario</span>
@@ -439,10 +451,10 @@
 <span class="sd">        -1.0 : Back Pass</span>
 <span class="sd">        0.5 : Side pass</span>
 <span class="sd">    pass_pressure : Integer</span>
-<span class="sd">        Defending players who are closer to sender/receiver but not involved in </span>
-<span class="sd">        packing. Indicator to see if players take high risk pass. </span>
+<span class="sd">        Defending players who are closer to sender/receiver but not involved in</span>
+<span class="sd">        packing. Indicator to see if players take high risk pass.</span>
 <span class="sd">        For eg: packing rate could be lower but pass pressure can be higher if pass</span>
-<span class="sd">        sender/receiver are heavily marked. </span>
+<span class="sd">        sender/receiver are heavily marked.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -460,7 +472,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">defending_team_xy</span> <span class="o">=</span> <span class="n">defending_team_xy</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">col_label_x</span> <span class="o">=</span> <span class="n">col_label_x</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">col_label_y</span> <span class="o">=</span> <span class="n">col_label_y</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">defend_side</span> <span class="o">=</span> <span class="n">defend_side</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">defend_side</span> <span class="o">=</span> <span class="n">defend_side</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">goal_center</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">5250</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;right&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5250</span><span class="p">,</span> <span class="mi">0</span><span class="p">]}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pass_pressure</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -511,7 +523,7 @@
         <span class="n">cp</span> <span class="o">=</span> <span class="n">calculate_packing</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">pass_direction</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">get_pass_direction</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sender_xy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">receiver_xy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">goal_xy</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sender_xy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">receiver_xy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">goal_xy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">defend_side</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">packing_df</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">method_1</span><span class="p">(</span>
             <span class="n">box_a</span><span class="p">,</span> <span class="n">box_b</span><span class="p">,</span> <span class="n">box_c</span><span class="p">,</span> <span class="n">box_d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">defending_team_xy</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">col_label_x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">col_label_x</span><span class="p">,</span>
@@ -550,6 +562,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">col_label_y</span><span class="p">]</span> <span class="o">=</span> <span class="n">defending_team_xy_unscaled</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">defending_team_xy_unscaled</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">packing_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">packing_rate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pass_pressure</span></div>
+
+
+<span class="c1"># %%</span>
+<span class="c1"># set([6]) - set ([])</span>
+<span class="nb">set</span><span class="p">([</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">symmetric_difference</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">]))</span>
+
+<span class="c1"># %%</span>
 </pre></div>
 
     </div>

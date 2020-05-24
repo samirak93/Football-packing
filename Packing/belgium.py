@@ -12,7 +12,6 @@ import numpy as np
 import pandas as pd
 
 from packing import packing
-from team_shape import team_shape
 from plot_packing import plot_packing
 
 import os
@@ -127,6 +126,9 @@ class belgium:
         self.df.loc[:, 'defend_team_id'] = pd.Series(
             [[int(i.replace('x_', '')) for i in defend_team_ids]])
 
+        # print(self.df)
+        # print(self.df.iloc[:, 4:18].dropna().columns.tolist())
+
         team_x = {'defender_team_x': self.df['defender_team_x'].tolist()[0],
                   "passer_team_x": self.df['passer_team_x'].tolist()[0]}
         team_x_df = pd.DataFrame.from_dict(team_x, orient='index').fillna(0).T
@@ -181,12 +183,13 @@ class belgium:
                        "defend_team_id":  self.df['defend_team_id'].tolist()[0]}
 
         self.def_team_xy_df = pd.DataFrame.from_dict(
-            def_team_xy, orient='index').fillna(0).T
+            def_team_xy, orient='index').fillna(0).T.set_index('defend_team_id', drop=False)
 
         self.def_team_xy_df.loc[:, 'sender'] = np.where(((self.def_team_xy_df['passer_team_x'] == self.df['sender_x'].values[0])
                                                          & (self.def_team_xy_df['passer_team_y'] == self.df['sender_y'].values[0])), 1, 0)
         self.def_team_xy_df.loc[:, 'receiver'] = np.where(((self.def_team_xy_df['passer_team_x'] == self.df['receiver_x'].values[0])
                                                            & (self.def_team_xy_df['passer_team_y'] == self.df['receiver_y'].values[0])), 1, 0)
+        # self.def_team_xy_df.set_index('defend_team_id')
 
     def packing_calculate(self):
 
@@ -197,6 +200,8 @@ class belgium:
                        col_label_x='defender_team_x', col_label_y='defender_team_y', defend_side=self.defend_side)
         self.packing_df, self.packing_rate, self.pass_pressure = pack.get_packing()
 
+        print(self.packing_df)
+
         passing_team_xy = pd.DataFrame({'passer_team_x': self.df['passer_team_x'].tolist()[
             0], 'passer_team_y': self.df['passer_team_y'].tolist()[0], 'passer_team_id': self.df['passer_team_id'].tolist()[0]})
 
@@ -205,8 +210,8 @@ class belgium:
         plot = plot_packing(passer_team_df=passing_team_xy, packing_df=self.packing_df, col_label_x='defender_team_x',
                             col_label_y='defender_team_y', packing_rate=self.packing_rate, pass_pressure=self.pass_pressure,
                             sender_xy=sender_xy, receiver_xy=receiver_xy, x_range=[-5250, 5250], y_range=[3400, -3400],
-                            pass_frame=self.play_id, file_name='belgium')
-        # plot.plot()
+                            pass_frame=self.play_id, file_name='belgium', plot_hint='on')
+        plot.plot()
 
     def execute_pack(self):
         # Looping functions
@@ -221,7 +226,6 @@ class belgium:
 if __name__ == '__main__':
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    print(dir_path)
     df = pd.read_csv(dir_path+"/data/passes.csv")
     df.loc[:, 'pass_success'] = np.where(((df['sender_id'] <= 14) & (df['receiver_id'] <= 14))
                                          | ((df['sender_id'] > 14) & (df['receiver_id'] > 14)), 1, 0)
@@ -229,7 +233,14 @@ if __name__ == '__main__':
     df = df.loc[(df['pass_success'] == 1) & (df['sender_id'] !=
                                              df['receiver_id']), :].copy().reset_index(drop=True)
     df = df.sample(1).copy()
+    # 852, 4364, 6736, 9101, 6067
+    # 3404 - side pass
+    # 6394, {'good': 8305, 5492, 7010}, 9960 - fwd pass
+
+    # df = df.iloc[3404:3405, :]
+
     play_id = str(df.index.values[0])
+    print(play_id)
     df = df.reset_index(drop=True)
     pack_belgium = belgium(df, play_id)
     pack_belgium.execute_pack()
