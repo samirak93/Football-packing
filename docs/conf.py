@@ -23,7 +23,7 @@ author = 'Samira Kumar'
 release = '0.1'
 
 sys.path.insert(0, os.path.abspath('..'))
-sys.path.insert(0, os.path.abspath('../Packing'))
+sys.path.insert(0, os.path.abspath('../football_packing'))
 
 # -- General configuration ---------------------------------------------------
 
@@ -63,7 +63,7 @@ html_theme_options = {'source_link_position': "none",
                       }
 
 # Sidebar
-html_sidebars = {'**': ['localtoc.html', 'searchbox.html'],
+html_sidebars = {'**': ['localtoc.html', 'searchbox.html', ],
                  'collapse': True}
 
 # Add any paths that contain custom static files (such as style sheets) here,

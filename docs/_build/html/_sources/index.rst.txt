@@ -29,5 +29,11 @@ multiplied with the packing value based on the type of pass.
    misc/install
    misc/modules
    misc/examples
+   misc/license
 
+|
 
+.. note:: This is still a work in progress as there are certain edge cases where packing rate could be incorrect. 
+         Please provide a feedback/comment on twitter/github if you encounter any errors.
+
+|

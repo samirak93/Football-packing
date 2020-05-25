@@ -3,9 +3,12 @@ Modules
 ********************
 |
 
+.. _link-target-module:
+
 Calculate packing
 ============================================
 |
+
 
 .. automodule:: packing
     :members: packing

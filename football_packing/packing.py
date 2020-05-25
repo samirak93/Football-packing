@@ -32,14 +32,14 @@ class calculate_packing:
         d_rg = np.round(np.linalg.norm(
             receiver-goal_receiver), 3)
 
-        if (d_rg < d_sg) and (np.abs(d_rg-d_sg) > 0.02):
+        if (d_rg < d_sg) and (np.abs(d_rg-d_sg) > 0.03):
             return 'Forward'
-        elif (d_rg > d_sg) and (np.abs(d_rg-d_sg) > 0.02):
+        elif (d_rg > d_sg) and (np.abs(d_rg-d_sg) > 0.03):
             return 'Back'
         else:
             return 'Side'
 
-    def method_1(self, box_a, box_b, box_c, box_d, df_method1, col_label_x, col_label_y, rect_thresh=0.02):
+    def method_1(self, box_a, box_b, box_c, box_d, df_method1, col_label_x, col_label_y, rect_thresh=0.015):
         """
         Method 1 :
         Draw a rectangle box between sender and receiver to see if any player
@@ -62,7 +62,7 @@ class calculate_packing:
             The column label for defending team's X coordinate in `defending_team_xy`
         col_label_y : String
             The column label for defending team's Y coordinate in `defending_team_xy`
-        rect_thresh : Float, default 0.01
+        rect_thresh : Float, default 0.015
             A threshold to check if any player is outside/on the edge of the box within
             the threshold distance
 
@@ -200,13 +200,13 @@ class calculate_packing:
         Check defender angle with respect to sender & receiver.
         One of the draw back of `method_2` is that defender can be close to line to pass
         but still be beyond the sender or receiver (one of angle b/w defender & sender/receiver > 90).
-        This method filters that condition.
+        This method filters this condition.
 
         Parameters
         ----------
         sender_xy : ndarray
             A ndarray of ['sender_x', 'sender_y']
-        p_r : ndarray
+        receiver_xy : ndarray
             A ndarray of ['receiver_x', 'receiver_y']
         df_method3 : DataFrame
             A copy of defending_team_xy dataframe, updated from `Method 2`
@@ -233,10 +233,15 @@ class calculate_packing:
             angle_r = np.round(math.degrees(
                 math.acos((d_sr**2 + d_rd**2 - d_sd**2)/(2.0 * d_sr * d_rd))))
 
-            if (angle_s <= 90.0) & (angle_r <= 90.0):
+            if (angle_s <= 60.0) & (angle_r <= 60.0):
+                method_3 = 1
+            elif ((angle_s <= 30) & (angle_r <= 150)) or ((angle_r <= 30) & (angle_s <= 150)):
+                method_3 = 1
+            elif ((angle_s <= 10) & (angle_r <= 125)) or ((angle_r <= 10) & (angle_s <= 125)):
                 method_3 = 1
             else:
                 method_3 = 0
+
             return pd.to_numeric(pd.Series({'method3_angle_s': angle_s,
                                             'method3_angle_r': angle_r,
                                             'method_3': method_3}),

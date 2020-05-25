@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from bokeh.plotting import figure, output_file, show, save
-from bokeh.models import ColumnDataSource, Label, LabelSet, Range1d
+from bokeh.models import ColumnDataSource, Label, LabelSet, Range1d, Title
 from bokeh.io import push_notebook, show, output_notebook
 from bokeh.layouts import row, gridplot
 
@@ -151,8 +151,13 @@ class plot_packing():
             self.packing_rate, self.pass_pressure)
 
         plot = figure(name='base', plot_height=550, plot_width=850,
-                      title=fig_title, tools="save, wheel_zoom, reset, pan", toolbar_location="right",
+                      tools="save, wheel_zoom, reset, pan", toolbar_location="right",
                       x_range=self.x_range, y_range=self.y_range,)
+
+        plot.add_layout(
+            Title(text=f"Pass pressure: {self.pass_pressure}", text_font_size="10pt", align='center'), 'above')
+        plot.add_layout(
+            Title(text=f"Packing rate: {self.packing_rate}", text_font_size="10pt", align='center'), 'above')
 
         image_min_x, image_min_y, image_max_x, image_max_y = min(self.x_range), max(self.y_range), \
             (abs(self.x_range[0]) + abs(self.x_range[1])
@@ -236,7 +241,5 @@ class plot_packing():
         # plot.min_border_right = 30
         # plot.min_border_top = 30
         # plot.min_border_bottom = 30
-        # caption1 = Label(text='msg1', x = mean(self.x_range), y = self.y_range[0])
-        # plot.add_layout(caption1)
 
         self.save_plots(plot)

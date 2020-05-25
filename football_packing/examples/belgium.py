@@ -126,9 +126,6 @@ class belgium:
         self.df.loc[:, 'defend_team_id'] = pd.Series(
             [[int(i.replace('x_', '')) for i in defend_team_ids]])
 
-        # print(self.df)
-        # print(self.df.iloc[:, 4:18].dropna().columns.tolist())
-
         team_x = {'defender_team_x': self.df['defender_team_x'].tolist()[0],
                   "passer_team_x": self.df['passer_team_x'].tolist()[0]}
         team_x_df = pd.DataFrame.from_dict(team_x, orient='index').fillna(0).T
@@ -199,9 +196,6 @@ class belgium:
         pack = packing(sender_xy, receiver_xy, self.def_team_xy_df,
                        col_label_x='defender_team_x', col_label_y='defender_team_y', defend_side=self.defend_side)
         self.packing_df, self.packing_rate, self.pass_pressure = pack.get_packing()
-
-        print(self.packing_df)
-
         passing_team_xy = pd.DataFrame({'passer_team_x': self.df['passer_team_x'].tolist()[
             0], 'passer_team_y': self.df['passer_team_y'].tolist()[0], 'passer_team_id': self.df['passer_team_id'].tolist()[0]})
 
@@ -233,14 +227,7 @@ if __name__ == '__main__':
     df = df.loc[(df['pass_success'] == 1) & (df['sender_id'] !=
                                              df['receiver_id']), :].copy().reset_index(drop=True)
     df = df.sample(1).copy()
-    # 852, 4364, 6736, 9101, 6067
-    # 3404 - side pass
-    # 6394, {'good': 8305, 5492, 7010}, 9960 - fwd pass
-
-    # df = df.iloc[3404:3405, :]
-
     play_id = str(df.index.values[0])
-    print(play_id)
     df = df.reset_index(drop=True)
     pack_belgium = belgium(df, play_id)
     pack_belgium.execute_pack()

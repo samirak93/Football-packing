@@ -61,6 +61,7 @@
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Usage &amp; Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 </ul>
 </ul>
 </li>
@@ -152,7 +153,7 @@
 <div class="line"><br /></div>
 </div>
 <div class="section" id="calculate-packing">
-<h2>Calculate packing<a class="headerlink" href="#calculate-packing" title="Permalink to this headline">¶</a></h2>
+<span id="link-target-module"></span><h2>Calculate packing<a class="headerlink" href="#calculate-packing" title="Permalink to this headline">¶</a></h2>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
@@ -228,7 +229,7 @@ defending players is within that space.</p>
 </div>
 <dl class="py function">
 <dt id="packing.calculate_packing.method_1">
-<code class="sig-prename descclassname">packing.calculate_packing.</code><code class="sig-name descname">method_1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">box_a</span></em>, <em class="sig-param"><span class="n">box_b</span></em>, <em class="sig-param"><span class="n">box_c</span></em>, <em class="sig-param"><span class="n">box_d</span></em>, <em class="sig-param"><span class="n">df_method1</span></em>, <em class="sig-param"><span class="n">col_label_x</span></em>, <em class="sig-param"><span class="n">col_label_y</span></em>, <em class="sig-param"><span class="n">rect_thresh</span><span class="o">=</span><span class="default_value">0.02</span></em><span class="sig-paren">)</span><a class="headerlink" href="#packing.calculate_packing.method_1" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">packing.calculate_packing.</code><code class="sig-name descname">method_1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">box_a</span></em>, <em class="sig-param"><span class="n">box_b</span></em>, <em class="sig-param"><span class="n">box_c</span></em>, <em class="sig-param"><span class="n">box_d</span></em>, <em class="sig-param"><span class="n">df_method1</span></em>, <em class="sig-param"><span class="n">col_label_x</span></em>, <em class="sig-param"><span class="n">col_label_y</span></em>, <em class="sig-param"><span class="n">rect_thresh</span><span class="o">=</span><span class="default_value">0.015</span></em><span class="sig-paren">)</span><a class="headerlink" href="#packing.calculate_packing.method_1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method 1 :
 Draw a rectangle box between sender and receiver to see if any player
 is inside the bounding box. A rect_thresh of 0.01 is used to consider players on the
@@ -250,7 +251,7 @@ edge of the box.</p>
 </dd>
 <dt><strong>col_label_y</strong><span class="classifier">String</span></dt><dd><p>The column label for defending team’s Y coordinate in <cite>defending_team_xy</cite></p>
 </dd>
-<dt><strong>rect_thresh</strong><span class="classifier">Float, default 0.01</span></dt><dd><p>A threshold to check if any player is outside/on the edge of the box within
+<dt><strong>rect_thresh</strong><span class="classifier">Float, default 0.015</span></dt><dd><p>A threshold to check if any player is outside/on the edge of the box within
 the threshold distance</p>
 </dd>
 </dl>
@@ -318,13 +319,13 @@ by being within a given distance</p>
 Check defender angle with respect to sender &amp; receiver.
 One of the draw back of <cite>method_2</cite> is that defender can be close to line to pass
 but still be beyond the sender or receiver (one of angle b/w defender &amp; sender/receiver &gt; 90).
-This method filters that condition.</p>
+This method filters this condition.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>sender_xy</strong><span class="classifier">ndarray</span></dt><dd><p>A ndarray of [‘sender_x’, ‘sender_y’]</p>
 </dd>
-<dt><strong>p_r</strong><span class="classifier">ndarray</span></dt><dd><p>A ndarray of [‘receiver_x’, ‘receiver_y’]</p>
+<dt><strong>receiver_xy</strong><span class="classifier">ndarray</span></dt><dd><p>A ndarray of [‘receiver_x’, ‘receiver_y’]</p>
 </dd>
 <dt><strong>df_method3</strong><span class="classifier">DataFrame</span></dt><dd><p>A copy of defending_team_xy dataframe, updated from <cite>Method 2</cite></p>
 </dd>
