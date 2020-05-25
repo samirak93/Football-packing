@@ -17,5 +17,5 @@ ehthumbs.db
 Icon?
 Thumbs.db
 
-.vscode
+.vscode/*.json
 __pycache__
