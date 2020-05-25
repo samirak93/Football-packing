@@ -78,6 +78,7 @@
 <li><a class="reference internal" href="#">Installation</a><ul>
 <li><a class="reference internal" href="#install">Install</a></li>
 <li><a class="reference internal" href="#versioned">Versioned</a></li>
+<li><a class="reference internal" href="#dependencies">Dependencies</a></li>
 </ul>
 </li>
 </ul>
@@ -112,6 +113,7 @@
 <li><a class="reference internal" href="#">Installation</a><ul>
 <li><a class="reference internal" href="#install">Install</a></li>
 <li><a class="reference internal" href="#versioned">Versioned</a></li>
+<li><a class="reference internal" href="#dependencies">Dependencies</a></li>
 </ul>
 </li>
 </ul>
@@ -135,14 +137,48 @@
 </div>
 <div class="section" id="versioned">
 <h2>Versioned<a class="headerlink" href="#versioned" title="Permalink to this headline">¶</a></h2>
-<p>Install a specific version (where &lt;VERSION&gt; is something like <cite>:Version:: |version|</cite>) from PyPi:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install <span class="nv">football_packing</span><span class="o">==</span>&lt;VERSION&gt;
+<p>Install a specific version (where &lt;VERSION&gt; is something like ‘0.1’) from PyPi:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install <span class="nv">football_packing</span><span class="o">==</span><span class="m">0</span>.1
 </pre></div>
 </div>
 <p>or from GitHub:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install https://github.com/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install git+https://github.com/samirak93/Football-packing
 </pre></div>
 </div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 66%" />
+<col style="width: 34%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Package</p></th>
+<th class="head"><p>Minimum supported version</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/index.html">Pandas</a></p></td>
+<td><p>&gt;=1.0.3</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://www.numpy.org">NumPy</a></p></td>
+<td><p>&gt;=1.18.1</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.bokeh.org/en/latest/">Bokeh</a></p></td>
+<td><p>&gt;=2.0.2</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://www.scipy.org/">Scipy</a></p></td>
+<td><p>&gt;=1.4.1</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://scikit-learn.org/stable/index.html">Scikit-learn</a></p></td>
+<td><p>&gt;=0.23.1</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 

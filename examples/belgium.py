@@ -11,8 +11,8 @@ Last Updated: May-20-2020
 import numpy as np
 import pandas as pd
 
-from packing import packing
-from plot_packing import plot_packing
+from football_packing import packing
+from football_packing import plot_packing
 
 import os
 import math
@@ -204,7 +204,7 @@ class belgium:
         plot = plot_packing(passer_team_df=passing_team_xy, packing_df=self.packing_df, col_label_x='defender_team_x',
                             col_label_y='defender_team_y', packing_rate=self.packing_rate, pass_pressure=self.pass_pressure,
                             sender_xy=sender_xy, receiver_xy=receiver_xy, x_range=[-5250, 5250], y_range=[3400, -3400],
-                            pass_frame=self.play_id, file_name='belgium', plot_hint='on')
+                            path_to_save=dir_path+'/', pass_frame=self.play_id, file_name='belgium', plot_hint='on')
         plot.plot()
 
     def execute_pack(self):

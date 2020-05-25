@@ -39,6 +39,8 @@ class plot_packing():
         List of range of x-axis of the pitch, Eg: [0, 100] or [-5250, 5250]
     y_range : [start, end] list
         List of range of y-axis of the pitch, Eg: [0, 100] or [3400, -3400]
+    path_to_save : 
+        A path to save the output html file. Path should end with `/`
     pass_frame : String, Optional, default None
         Identifier to show pass event time
     bcg_img : String, default '/images/pitch/pitch.jpg'
@@ -72,6 +74,7 @@ class plot_packing():
             receiver_xy,
             x_range,
             y_range,
+            path_to_save,
             pass_frame=None,
             bcg_img='/images/pitch/pitch.jpg',
             plot_hint='off',
@@ -91,9 +94,8 @@ class plot_packing():
         self.pass_frame = pass_frame
         self.plot_hint = plot_hint
         self.file_name = file_name
-        self.path = os.path.dirname(os.path.realpath(__file__))
-        Path(self.path+"/plots/").mkdir(parents=True, exist_ok=True)
-        output_file(self.path+"/plots/"+self.file_name +
+        self.path_to_save = path_to_save
+        output_file(path_to_save + self.file_name +
                     ".html", title=self.file_name + " plot")
 
     def save_plots(self, plot):
@@ -106,15 +108,12 @@ class plot_packing():
 
         Returns
         ----------
-        show()
-            plot is shown on browser, notebook(if module excuted there)
         save()
-            plot save to the output_file path 
+            plot save to the path_to_save path 
         """
-        # show(plot)
         save(plot)
         print(
-            f"Plot successfully saved at {self.path+'/plots/'+self.file_name+'.html'}")
+            f"Plot successfully saved at {self.path_to_save+self.file_name+'.html'}")
 
     def plot(self):
 
@@ -163,7 +162,7 @@ class plot_packing():
             (abs(self.x_range[0]) + abs(self.x_range[1])
              ), (abs(self.y_range[0]) + abs(self.y_range[1]))
 
-        plot.image_url(url=[self.path+self.bcg_img], x=image_min_x, y=image_min_y,
+        plot.image_url(url=[self.path_to_save+self.bcg_img], x=image_min_x, y=image_min_y,
                        w=image_max_x, h=image_max_y, anchor="bottom_left")
 
         plot.line([self.sender_xy[0], self.receiver_xy[0]], [self.sender_xy[1], self.receiver_xy[1]],
