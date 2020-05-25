@@ -413,13 +413,13 @@ packing rate.</p>
 </div>
 </div>
 <div class="section" id="visualize-packing">
-<h2>Visualize Packing<a class="headerlink" href="#visualize-packing" title="Permalink to this headline">¶</a></h2>
+<span id="link-target3"></span><h2>Visualize Packing<a class="headerlink" href="#visualize-packing" title="Permalink to this headline">¶</a></h2>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
 <span class="target" id="module-plot_packing"></span><dl class="py class">
 <dt id="plot_packing.plot_packing">
-<em class="property">class </em><code class="sig-prename descclassname">plot_packing.</code><code class="sig-name descname">plot_packing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">passer_team_df</span></em>, <em class="sig-param"><span class="n">packing_df</span></em>, <em class="sig-param"><span class="n">col_label_x</span></em>, <em class="sig-param"><span class="n">col_label_y</span></em>, <em class="sig-param"><span class="n">packing_rate</span></em>, <em class="sig-param"><span class="n">pass_pressure</span></em>, <em class="sig-param"><span class="n">sender_xy</span></em>, <em class="sig-param"><span class="n">receiver_xy</span></em>, <em class="sig-param"><span class="n">x_range</span></em>, <em class="sig-param"><span class="n">y_range</span></em>, <em class="sig-param"><span class="n">pass_frame</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bcg_img</span><span class="o">=</span><span class="default_value">'/images/pitch/pitch.jpg'</span></em>, <em class="sig-param"><span class="n">plot_hint</span><span class="o">=</span><span class="default_value">'off'</span></em>, <em class="sig-param"><span class="n">file_name</span><span class="o">=</span><span class="default_value">'packing'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/plot_packing.html#plot_packing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plot_packing.plot_packing" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">plot_packing.</code><code class="sig-name descname">plot_packing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">passer_team_df</span></em>, <em class="sig-param"><span class="n">packing_df</span></em>, <em class="sig-param"><span class="n">col_label_x</span></em>, <em class="sig-param"><span class="n">col_label_y</span></em>, <em class="sig-param"><span class="n">packing_rate</span></em>, <em class="sig-param"><span class="n">pass_pressure</span></em>, <em class="sig-param"><span class="n">sender_xy</span></em>, <em class="sig-param"><span class="n">receiver_xy</span></em>, <em class="sig-param"><span class="n">x_range</span></em>, <em class="sig-param"><span class="n">y_range</span></em>, <em class="sig-param"><span class="n">path_to_save</span></em>, <em class="sig-param"><span class="n">pass_frame</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bcg_img</span><span class="o">=</span><span class="default_value">'/images/pitch/pitch.jpg'</span></em>, <em class="sig-param"><span class="n">plot_hint</span><span class="o">=</span><span class="default_value">'off'</span></em>, <em class="sig-param"><span class="n">file_name</span><span class="o">=</span><span class="default_value">'packing'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/plot_packing.html#plot_packing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plot_packing.plot_packing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the player location on the pitch and highlight the defending team players
 that might have been calculated in packing. Turning on/off plot_hint will show 
 how packing was calculated.</p>
@@ -445,6 +445,8 @@ how packing was calculated.</p>
 <dt><strong>x_range</strong><span class="classifier">[start, end] list</span></dt><dd><p>List of range of x-axis of the pitch, Eg: [0, 100] or [-5250, 5250]</p>
 </dd>
 <dt><strong>y_range</strong><span class="classifier">[start, end] list</span></dt><dd><p>List of range of y-axis of the pitch, Eg: [0, 100] or [3400, -3400]</p>
+</dd>
+<dt><strong>path_to_save :</strong></dt><dd><p>A path to save the output html file. Path should end with <cite>/</cite></p>
 </dd>
 <dt><strong>pass_frame</strong><span class="classifier">String, Optional, default None</span></dt><dd><p>Identifier to show pass event time</p>
 </dd>
@@ -481,9 +483,7 @@ will be overwritten.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt>show()</dt><dd><p>plot is shown on browser, notebook(if module excuted there)</p>
-</dd>
-<dt>save()</dt><dd><p>plot save to the output_file path</p>
+<dt>save()</dt><dd><p>plot save to the path_to_save path</p>
 </dd>
 </dl>
 </dd>

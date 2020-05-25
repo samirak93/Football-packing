@@ -153,6 +153,8 @@
 <span class="sd">        List of range of x-axis of the pitch, Eg: [0, 100] or [-5250, 5250]</span>
 <span class="sd">    y_range : [start, end] list</span>
 <span class="sd">        List of range of y-axis of the pitch, Eg: [0, 100] or [3400, -3400]</span>
+<span class="sd">    path_to_save : </span>
+<span class="sd">        A path to save the output html file. Path should end with `/`</span>
 <span class="sd">    pass_frame : String, Optional, default None</span>
 <span class="sd">        Identifier to show pass event time</span>
 <span class="sd">    bcg_img : String, default &#39;/images/pitch/pitch.jpg&#39;</span>
@@ -186,6 +188,7 @@
             <span class="n">receiver_xy</span><span class="p">,</span>
             <span class="n">x_range</span><span class="p">,</span>
             <span class="n">y_range</span><span class="p">,</span>
+            <span class="n">path_to_save</span><span class="p">,</span>
             <span class="n">pass_frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">bcg_img</span><span class="o">=</span><span class="s1">&#39;/images/pitch/pitch.jpg&#39;</span><span class="p">,</span>
             <span class="n">plot_hint</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">,</span>
@@ -205,9 +208,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pass_frame</span> <span class="o">=</span> <span class="n">pass_frame</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_hint</span> <span class="o">=</span> <span class="n">plot_hint</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span> <span class="o">=</span> <span class="n">file_name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
-        <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">+</span><span class="s2">&quot;/plots/&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">output_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">+</span><span class="s2">&quot;/plots/&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">file_name</span> <span class="o">+</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_save</span> <span class="o">=</span> <span class="n">path_to_save</span>
+        <span class="n">output_file</span><span class="p">(</span><span class="n">path_to_save</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span> <span class="o">+</span>
                     <span class="s2">&quot;.html&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">file_name</span> <span class="o">+</span> <span class="s2">&quot; plot&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="plot_packing.save_plots"><a class="viewcode-back" href="../misc/modules.html#plot_packing.plot_packing.save_plots">[docs]</a>    <span class="k">def</span> <span class="nf">save_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot</span><span class="p">):</span>
@@ -220,15 +222,12 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        ----------</span>
-<span class="sd">        show()</span>
-<span class="sd">            plot is shown on browser, notebook(if module excuted there)</span>
 <span class="sd">        save()</span>
-<span class="sd">            plot save to the output_file path </span>
+<span class="sd">            plot save to the path_to_save path </span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># show(plot)</span>
         <span class="n">save</span><span class="p">(</span><span class="n">plot</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Plot successfully saved at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">+</span><span class="s1">&#39;/plots/&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="o">+</span><span class="s1">&#39;.html&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="sa">f</span><span class="s2">&quot;Plot successfully saved at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_save</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="o">+</span><span class="s1">&#39;.html&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
@@ -277,7 +276,7 @@
             <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
              <span class="p">),</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
 
-        <span class="n">plot</span><span class="o">.</span><span class="n">image_url</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">bcg_img</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="n">image_min_x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">image_min_y</span><span class="p">,</span>
+        <span class="n">plot</span><span class="o">.</span><span class="n">image_url</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_save</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">bcg_img</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="n">image_min_x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">image_min_y</span><span class="p">,</span>
                        <span class="n">w</span><span class="o">=</span><span class="n">image_max_x</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">image_max_y</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s2">&quot;bottom_left&quot;</span><span class="p">)</span>
 
         <span class="n">plot</span><span class="o">.</span><span class="n">line</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">sender_xy</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">receiver_xy</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sender_xy</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">receiver_xy</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>

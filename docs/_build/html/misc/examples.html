@@ -78,9 +78,13 @@
 <li><a class="reference internal" href="#">Usage &amp; Examples</a><ul>
 <li><a class="reference internal" href="#usage">Usage</a><ul>
 <li><a class="reference internal" href="#get-packing-rate">Get packing rate</a></li>
+<li><a class="reference internal" href="#plot-packing">Plot packing</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#examples">Examples</a></li>
+<li><a class="reference internal" href="#examples">Examples</a><ul>
+<li><a class="reference internal" href="#belgium-py">Belgium.py</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -115,9 +119,13 @@
 <li><a class="reference internal" href="#">Usage &amp; Examples</a><ul>
 <li><a class="reference internal" href="#usage">Usage</a><ul>
 <li><a class="reference internal" href="#get-packing-rate">Get packing rate</a></li>
+<li><a class="reference internal" href="#plot-packing">Plot packing</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#examples">Examples</a></li>
+<li><a class="reference internal" href="#examples">Examples</a><ul>
+<li><a class="reference internal" href="#belgium-py">Belgium.py</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -149,10 +157,35 @@
 </pre></div>
 </div>
 </div>
+<div class="section" id="plot-packing">
+<h3>Plot packing<a class="headerlink" href="#plot-packing" title="Permalink to this headline">¶</a></h3>
+<p>The entire documentation can be found <a class="reference internal" href="modules.html#visualize-packing"><span class="std std-ref">under modules.</span></a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">football_packing</span> <span class="k">as</span> <span class="nn">fp</span>
+
+<span class="n">plot</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">plot_packing</span><span class="p">(</span><span class="n">passer_team_df</span><span class="o">=</span><span class="n">passing_team_xy</span><span class="p">,</span> <span class="n">packing_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">packing_df</span><span class="p">,</span> <span class="n">col_label_x</span><span class="o">=</span><span class="s1">&#39;defender_team_x&#39;</span><span class="p">,</span>
+                        <span class="n">col_label_y</span><span class="o">=</span><span class="s1">&#39;defender_team_y&#39;</span><span class="p">,</span> <span class="n">packing_rate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">packing_rate</span><span class="p">,</span> <span class="n">pass_pressure</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pass_pressure</span><span class="p">,</span>
+                        <span class="n">sender_xy</span><span class="o">=</span><span class="n">sender_xy</span><span class="p">,</span> <span class="n">receiver_xy</span><span class="o">=</span><span class="n">receiver_xy</span><span class="p">,</span> <span class="n">x_range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">5250</span><span class="p">,</span> <span class="mi">5250</span><span class="p">],</span> <span class="n">y_range</span><span class="o">=</span><span class="p">[</span><span class="mi">3400</span><span class="p">,</span> <span class="o">-</span><span class="mi">3400</span><span class="p">],</span>
+                        <span class="n">path_to_save</span><span class="o">=</span><span class="n">dir_path</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">pass_frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">play_id</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;belgium&#39;</span><span class="p">,</span> <span class="n">plot_hint</span><span class="o">=</span><span class="s1">&#39;on&#39;</span><span class="p">)</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
 </div>
 <div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p>There are 2 examples present in Packing/Examples folder.</p>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="section" id="belgium-py">
+<h3>Belgium.py<a class="headerlink" href="#belgium-py" title="Permalink to this headline">¶</a></h3>
+<p>(Data Source: <a class="reference external" href="https://github.com/JanVanHaaren/mlsa18-pass-prediction">GitHub</a>)</p>
+<p>Run the <code class="code docutils literal notranslate"><span class="pre">belgium.py</span></code> from the examples folder under main football_packing folder. A html file,
+<code class="code docutils literal notranslate"><span class="pre">belgium.html</span></code>, with the plot will be created in the same folder.</p>
+</div>
 </div>
 </div>
 
