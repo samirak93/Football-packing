@@ -28,9 +28,9 @@ class calculate_packing:
             goal_receiver = [1, receiver[1]]
 
         # Distance of 3 sides sender-receiver-goal triangle
-        d_sg = np.round(np.linalg.norm(sender-goal_sender), 3)
+        d_sg = np.round(np.linalg.norm(sender-goal_sender), 5)
         d_rg = np.round(np.linalg.norm(
-            receiver-goal_receiver), 3)
+            receiver-goal_receiver), 5)
 
         if (d_rg < d_sg) and (np.abs(d_rg-d_sg) > 0.03):
             return 'Forward'
@@ -39,7 +39,7 @@ class calculate_packing:
         else:
             return 'Side'
 
-    def method_1(self, box_a, box_b, box_c, box_d, df_method1, col_label_x, col_label_y, rect_thresh=0.015):
+    def method_1(self, box_a, box_b, box_c, box_d, df_method1, col_label_x, col_label_y, rect_thresh=0.010):
         """
         Method 1 :
         Draw a rectangle box between sender and receiver to see if any player
@@ -80,18 +80,18 @@ class calculate_packing:
             if area == np.nan:
                 return 0
             else:
-                return np.round(area, 3)
+                return np.round(area, 5)
 
         def checkBoundary(df):
             method_1 = 0
             point_def = df[[col_label_x, col_label_y]].values.tolist()
 
-            p_a = np.linalg.norm(point_def-box_a)
-            p_b = np.linalg.norm(point_def-box_b)
-            p_c = np.linalg.norm(point_def-box_c)
-            p_d = np.linalg.norm(point_def-box_d)
+            p_a = np.round(np.linalg.norm(point_def-box_a), 5)
+            p_b = np.round(np.linalg.norm(point_def-box_b), 5)
+            p_c = np.round(np.linalg.norm(point_def-box_c), 5)
+            p_d = np.round(np.linalg.norm(point_def-box_d), 5)
 
-            area_rect = np.round(ab*bc, 3)
+            area_rect = np.round(ab*bc, 5)
             area_ab = area_triangle(p_a, p_b, ab)
             area_bc = area_triangle(p_b, p_c, bc)
             area_cd = area_triangle(p_c, p_d, cd)
@@ -100,7 +100,7 @@ class calculate_packing:
             # Check if player xy lies inside the bounding box
             # rect_thresh = 0.1 is for normalized data
 
-            if (area_ab + area_bc + area_cd + area_da) - area_rect <= rect_thresh:
+            if ((area_ab + area_bc + area_cd + area_da) - area_rect) <= rect_thresh:
                 method_1 = 1
             else:
                 method_1 = 0
@@ -110,10 +110,10 @@ class calculate_packing:
                                  downcast='integer')
 
         # rectangle edges
-        ab = np.linalg.norm(box_a-box_b)
-        bc = np.linalg.norm(box_b-box_c)
-        cd = np.linalg.norm(box_c-box_d)
-        da = np.linalg.norm(box_d-box_a)
+        ab = np.round(np.linalg.norm(box_a-box_b), 5)
+        bc = np.round(np.linalg.norm(box_b-box_c), 5)
+        cd = np.round(np.linalg.norm(box_c-box_d), 5)
+        da = np.round(np.linalg.norm(box_d-box_a), 5)
 
         df_method1[['triangle_area', 'rect_length', 'rect_width', 'method_1']
                    ] = df_method1.apply(checkBoundary, axis=1)
@@ -152,9 +152,9 @@ class calculate_packing:
 
         def check_intersection(df):
             """
-            If rectangle from method_1 is big enough ((rect_length > 0.07) or (rect_width > 0.07)), 
-            take a diagonal (non player) side of the rectangle and find the perpendicular distance 
-            between it and the line of pass. If a defending player is within that distance to the 
+            If rectangle from method_1 is big enough ((rect_length > 0.01) or (rect_width > 0.01)),
+            take a diagonal (non player) side of the rectangle and find the perpendicular distance
+            between it and the line of pass. If a defending player is within that distance to the
             line of pass, then method_2 = 1.
 
             If rectangle is small, then use method2_radius to check if a defending player
@@ -165,17 +165,17 @@ class calculate_packing:
             # Defender point
             center = df[[col_label_x, col_label_y]].values
             dist_dl = np.round(np.abs(np.cross(receiver_xy-sender_xy, sender_xy-center)) /
-                               np.linalg.norm(receiver_xy-sender_xy), 3)
+                               np.linalg.norm(receiver_xy-sender_xy), 5)
 
             # Box diagonal
             box_diagonal = np.array([sender_xy[0], receiver_xy[1]])
             dist_box_line = np.round(np.abs(np.cross(receiver_xy-sender_xy, sender_xy-box_diagonal)) /
-                                     np.linalg.norm(receiver_xy-sender_xy), 3)
+                                     np.linalg.norm(receiver_xy-sender_xy), 5)
 
             rect_length = df['rect_length']
             rect_width = df['rect_width']
 
-            if (rect_length <= 0.07) or (rect_width <= 0.07):
+            if (rect_length <= 0.01) or (rect_width <= 0.01):
                 if (dist_dl <= method2_radius):
                     method_2 = 1
                 else:
@@ -200,7 +200,7 @@ class calculate_packing:
         Check defender angle with respect to sender & receiver.
         One of the draw back of `method_2` is that defender can be close to line to pass
         but still be beyond the sender or receiver (one of angle b/w defender & sender/receiver > 90).
-        This method filters this condition.
+        This method checks this condition.
 
         Parameters
         ----------
@@ -233,12 +233,12 @@ class calculate_packing:
             angle_r = np.round(math.degrees(
                 math.acos((d_sr**2 + d_rd**2 - d_sd**2)/(2.0 * d_sr * d_rd))))
 
-            if (angle_s <= 60.0) & (angle_r <= 60.0):
+            if (angle_s <= 100) & (angle_r <= 100):
                 method_3 = 1
-            elif ((angle_s <= 30) & (angle_r <= 150)) or ((angle_r <= 30) & (angle_s <= 150)):
-                method_3 = 1
-            elif ((angle_s <= 10) & (angle_r <= 125)) or ((angle_r <= 10) & (angle_s <= 125)):
-                method_3 = 1
+            # elif ((angle_s <= 30) & (angle_r <= 150)) or ((angle_r <= 30) & (angle_s <= 150)):
+            #     method_3 = 1
+            # elif ((angle_s <= 10) & (angle_r <= 125)) or ((angle_r <= 10) & (angle_s <= 125)):
+            #     method_3 = 1
             else:
                 method_3 = 0
 
@@ -375,8 +375,8 @@ class packing:
         col_label_y: str,
         defend_side: str,
     ):
-        self.sender_xy = np.array(sender_xy)
-        self.receiver_xy = np.array(receiver_xy)
+        self.sender_xy = np.asarray(sender_xy)
+        self.receiver_xy = np.asarray(receiver_xy)
         self.defending_team_xy = defending_team_xy.copy()
         self.col_label_x = col_label_x
         self.col_label_y = col_label_y
@@ -407,26 +407,29 @@ class packing:
             raise RuntimeError(
                 f"Either {self.col_label_x} or {self.col_label_y} is not a column in defending_team_xy. Please provide valid column names")
 
+        concat_location = np.concatenate([self.defending_team_xy[[self.col_label_x, self.col_label_y]].values,
+                                          self.sender_xy.reshape(
+            1, -1), self.receiver_xy.reshape(1, -1),
+            np.array(self.goal_center[self.defend_side]).reshape(1, -1)])
         min_max_scaler = preprocessing.MinMaxScaler()
         defending_team_xy_scaled = min_max_scaler.fit_transform(
-            self.defending_team_xy[[self.col_label_x, self.col_label_y]].values)
+            concat_location)
+
         self.defending_team_xy.drop(
             [self.col_label_x, self.col_label_y], axis=1, inplace=True)
         self.defending_team_xy[self.col_label_x], self.defending_team_xy[
-            self.col_label_y] = defending_team_xy_scaled[:, 0], defending_team_xy_scaled[:, 1]
+            self.col_label_y] = defending_team_xy_scaled[:-3, 0], defending_team_xy_scaled[:-3, 1]
 
-        self.sender_xy = min_max_scaler.transform(
-            self.sender_xy.reshape(1, 2))[0]
-        self.receiver_xy = min_max_scaler.transform(
-            self.receiver_xy.reshape(1, 2))[0]
+        self.sender_xy = defending_team_xy_scaled[-3]
+        self.receiver_xy = defending_team_xy_scaled[-2]
+        self.goal_xy = defending_team_xy_scaled[-1]
 
-        box_a = np.array(self.sender_xy)  # sender
-        box_b = np.array([self.sender_xy[0], self.receiver_xy[1]])
-        box_c = np.array(list(self.receiver_xy))  # receiver
-        box_d = np.array([self.receiver_xy[0], self.sender_xy[1]])
-
-        self.goal_xy = min_max_scaler.transform(
-            np.array(self.goal_center[self.defend_side]).reshape(1, 2))[0]
+        box_a = np.asarray(self.sender_xy)  # sender
+        box_b = np.asarray(
+            [self.sender_xy[0], self.receiver_xy[1]])
+        box_c = np.asarray(list(self.receiver_xy))  # receiver
+        box_d = np.asarray(
+            [self.receiver_xy[0], self.sender_xy[1]])
 
         cp = calculate_packing()
 
@@ -438,10 +441,10 @@ class packing:
             col_label_y=self.col_label_y)
 
         self.packing_df = cp.method_2(
-            box_a, box_c, self.packing_df, col_label_x=self.col_label_x, col_label_y=self.col_label_y)
+            self.sender_xy, self.receiver_xy, self.packing_df, col_label_x=self.col_label_x, col_label_y=self.col_label_y)
 
         self.packing_df = cp.method_3(
-            box_a, box_c, self.packing_df, col_label_x=self.col_label_x, col_label_y=self.col_label_y)
+            self.sender_xy, self.receiver_xy, self.packing_df, col_label_x=self.col_label_x, col_label_y=self.col_label_y)
 
         self.packing_df = cp.update_method_1(self.packing_df)
 

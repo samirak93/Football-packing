@@ -226,7 +226,8 @@ class plot_packing():
         if self.plot_hint == 'on':
             # plot rectangles
 
-            plot.patches([[self.receiver_xy[0], self.receiver_xy[0], self.sender_xy[0], self.sender_xy[0]]],
+            plot.patches([[self.receiver_xy[0], self.receiver_xy[0],
+                           self.sender_xy[0], self.sender_xy[0]]],
                          [[self.sender_xy[1], self.receiver_xy[1],
                              self.receiver_xy[1], self.sender_xy[1]]],
                          color="#B3DE69", fill_alpha=0.3)
