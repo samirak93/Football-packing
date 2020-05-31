@@ -98,7 +98,7 @@ class calculate_packing:
             area_da = area_triangle(p_d, p_a, da)
 
             # Check if player xy lies inside the bounding box
-            # rect_thresh = 0.1 is for normalized data
+            # rect_thresh = 0.010 is for normalized data
 
             if ((area_ab + area_bc + area_cd + area_da) - area_rect) <= rect_thresh:
                 method_1 = 1
@@ -237,10 +237,6 @@ class calculate_packing:
 
             if (angle_s <= 105) & (angle_r <= 105):
                 method_3 = 1
-            # elif ((angle_s <= 30) & (angle_r <= 150)) or ((angle_r <= 30) & (angle_s <= 150)):
-            #     method_3 = 1
-            # elif ((angle_s <= 10) & (angle_r <= 125)) or ((angle_r <= 10) & (angle_s <= 125)):
-            #     method_3 = 1
             else:
                 method_3 = 0
 
@@ -337,6 +333,7 @@ class packing:
         Receiver XY coordinates as numpy array
     defending_team_xy : DataFrame
         DataFrame with the defending team coordinates
+        Do not include any passing team XY or other columns as it'll impact plotting function.
     col_label_x : String
         The column label for defending team's X coordinate in `defending_team_xy`
     col_label_y : String
@@ -344,8 +341,8 @@ class packing:
     defend_side : String
         The side of the defending team on the football pitch. Left/Right, `not case sensitive`
     goal_center : Dict
-        Center of goal, based on defend_side
-        {'left': [-5250, 0], 'right': [5250, 0]} - Rescaled later
+        Center of goal selected based on defend_side
+        {'left': [0, 0.5], 'right': [1, 0.5]}
 
     Returns
     ----------

@@ -21,8 +21,10 @@ class plot_packing():
     ----------
     passer_team_df : DataFrame
         DataFrame with the passing team coordinates
+        Column name with `id` or `_id` are considered player ids (Only 1 column with such name).
     packing_df : DataFrame
-        Resulting DataFrame from packing module (should not be altered)
+        Resulting DataFrame from packing module (should not be altered).
+        Column name with `id` or `_id` are considered player ids (Only 1 column with such name).
     col_label_x : String
         The column label for defending team's X coordinate in defending_team_xy
     col_label_y : String
@@ -36,14 +38,14 @@ class plot_packing():
     receiver_xy : ndarray
         Receiver XY coordinates as numpy array
     x_range : [start, end] list
-        List of range of x-axis of the pitch, Eg: [0, 100] or [-5250, 5250]
+        List of range of x-axis of the pitch, Eg: `[0, 100]` or `[-5250, 5250]`
     y_range : [start, end] list
-        List of range of y-axis of the pitch, Eg: [0, 100] or [3400, -3400]
+        List of range of y-axis of the pitch, Eg: `[0, 100]`or `[3400, -3400]`
     path_to_save : 
-        A path to save the output html file. Path should end with `/`
+        A path to save the output html file. Path should end with a `/`
     pass_frame : String, Optional, default None
         Identifier to show pass event time
-    bcg_img : String, default '/images/pitch/pitch.jpg'
+    bcg_img : String, default None
         Path to background image
     plot_hint : String, default `off`
         To display the logic behind calculating packing
@@ -54,10 +56,9 @@ class plot_packing():
     ----------
     show() :
         Plot is shown on the browser. If module is run on jupyter notebook,
-        plot will be visible within the notebook. 
+        plot will be shown in the notebook. 
     save() : 
-        Plot saved locally to folder `plots`. If the folder does not exist, 
-        folder is created. 
+        Plot saved locally to path specified under `path_to_save`.
         Note: If `file_name` is not changed every time module is run, plots
         will be overwritten.
     """
@@ -76,7 +77,7 @@ class plot_packing():
             y_range,
             path_to_save,
             pass_frame=None,
-            bcg_img='/images/pitch/pitch.jpg',
+            bcg_img=None,
             plot_hint='off',
             file_name='packing'
     ):
@@ -158,12 +159,13 @@ class plot_packing():
         plot.add_layout(
             Title(text=f"Packing rate: {self.packing_rate}", text_font_size="10pt", align='center'), 'above')
 
-        image_min_x, image_min_y, image_max_x, image_max_y = min(self.x_range), max(self.y_range), \
-            (abs(self.x_range[0]) + abs(self.x_range[1])
-             ), (abs(self.y_range[0]) + abs(self.y_range[1]))
+        if self.bcg_img != None:
+            image_min_x, image_min_y, image_max_x, image_max_y = min(self.x_range), max(self.y_range), \
+                (abs(self.x_range[0]) + abs(self.x_range[1])
+                 ), (abs(self.y_range[0]) + abs(self.y_range[1]))
 
-        plot.image_url(url=[self.path_to_save+self.bcg_img], x=image_min_x, y=image_min_y,
-                       w=image_max_x, h=image_max_y, anchor="bottom_left")
+            plot.image_url(url=[self.path_to_save+self.bcg_img], x=image_min_x, y=image_min_y,
+                           w=image_max_x, h=image_max_y, anchor="bottom_left")
 
         plot.line([self.sender_xy[0], self.receiver_xy[0]], [self.sender_xy[1], self.receiver_xy[1]],
                   line_color="dodgerblue", line_alpha=0.5, line_width=4, line_dash='dashed',)
