@@ -168,7 +168,8 @@
 </dd>
 <dt><strong>receiver_xy</strong><span class="classifier">ndarray</span></dt><dd><p>Receiver XY coordinates as numpy array</p>
 </dd>
-<dt><strong>defending_team_xy</strong><span class="classifier">DataFrame</span></dt><dd><p>DataFrame with the defending team coordinates</p>
+<dt><strong>defending_team_xy</strong><span class="classifier">DataFrame</span></dt><dd><p>DataFrame with the defending team coordinates
+Do not include any passing team XY or other columns as it’ll impact plotting function.</p>
 </dd>
 <dt><strong>col_label_x</strong><span class="classifier">String</span></dt><dd><p>The column label for defending team’s X coordinate in <cite>defending_team_xy</cite></p>
 </dd>
@@ -176,8 +177,8 @@
 </dd>
 <dt><strong>defend_side</strong><span class="classifier">String</span></dt><dd><p>The side of the defending team on the football pitch. Left/Right, <cite>not case sensitive</cite></p>
 </dd>
-<dt><strong>goal_center</strong><span class="classifier">Dict</span></dt><dd><p>Center of goal, based on defend_side
-{‘left’: [-5250, 0], ‘right’: [5250, 0]} - Rescaled later</p>
+<dt><strong>goal_center</strong><span class="classifier">Dict</span></dt><dd><p>Center of goal selected based on defend_side
+{‘left’: [0, 0.5], ‘right’: [1, 0.5]}</p>
 </dd>
 </dl>
 </dd>
@@ -229,7 +230,7 @@ defending players is within that space.</p>
 </div>
 <dl class="py function">
 <dt id="packing.calculate_packing.method_1">
-<code class="sig-prename descclassname">packing.calculate_packing.</code><code class="sig-name descname">method_1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">box_a</span></em>, <em class="sig-param"><span class="n">box_b</span></em>, <em class="sig-param"><span class="n">box_c</span></em>, <em class="sig-param"><span class="n">box_d</span></em>, <em class="sig-param"><span class="n">df_method1</span></em>, <em class="sig-param"><span class="n">col_label_x</span></em>, <em class="sig-param"><span class="n">col_label_y</span></em>, <em class="sig-param"><span class="n">rect_thresh</span><span class="o">=</span><span class="default_value">0.015</span></em><span class="sig-paren">)</span><a class="headerlink" href="#packing.calculate_packing.method_1" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">packing.calculate_packing.</code><code class="sig-name descname">method_1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">box_a</span></em>, <em class="sig-param"><span class="n">box_b</span></em>, <em class="sig-param"><span class="n">box_c</span></em>, <em class="sig-param"><span class="n">box_d</span></em>, <em class="sig-param"><span class="n">df_method1</span></em>, <em class="sig-param"><span class="n">col_label_x</span></em>, <em class="sig-param"><span class="n">col_label_y</span></em>, <em class="sig-param"><span class="n">rect_thresh</span><span class="o">=</span><span class="default_value">0.01</span></em><span class="sig-paren">)</span><a class="headerlink" href="#packing.calculate_packing.method_1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method 1 :
 Draw a rectangle box between sender and receiver to see if any player
 is inside the bounding box. A rect_thresh of 0.01 is used to consider players on the
@@ -274,7 +275,7 @@ the threshold distance</p>
 </div>
 <dl class="py function">
 <dt id="packing.calculate_packing.method_2">
-<code class="sig-prename descclassname">packing.calculate_packing.</code><code class="sig-name descname">method_2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">sender_xy</span></em>, <em class="sig-param"><span class="n">receiver_xy</span></em>, <em class="sig-param"><span class="n">df_method2</span></em>, <em class="sig-param"><span class="n">col_label_x</span></em>, <em class="sig-param"><span class="n">col_label_y</span></em>, <em class="sig-param"><span class="n">method2_radius</span><span class="o">=</span><span class="default_value">0.15</span></em><span class="sig-paren">)</span><a class="headerlink" href="#packing.calculate_packing.method_2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">packing.calculate_packing.</code><code class="sig-name descname">method_2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">sender_xy</span></em>, <em class="sig-param"><span class="n">receiver_xy</span></em>, <em class="sig-param"><span class="n">df_method2</span></em>, <em class="sig-param"><span class="n">col_label_x</span></em>, <em class="sig-param"><span class="n">col_label_y</span></em>, <em class="sig-param"><span class="n">method2_radius</span><span class="o">=</span><span class="default_value">0.12</span></em><span class="sig-paren">)</span><a class="headerlink" href="#packing.calculate_packing.method_2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method 2 :
 Check if player is within a certain distance to line of pass, so that
 the pass can potentially be intersected (assuming the speed of pass is not a factor).</p>
@@ -319,7 +320,7 @@ by being within a given distance</p>
 Check defender angle with respect to sender &amp; receiver.
 One of the draw back of <cite>method_2</cite> is that defender can be close to line to pass
 but still be beyond the sender or receiver (one of angle b/w defender &amp; sender/receiver &gt; 90).
-This method filters this condition.</p>
+This method checks this condition.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
@@ -419,16 +420,18 @@ packing rate.</p>
 </div>
 <span class="target" id="module-plot_packing"></span><dl class="py class">
 <dt id="plot_packing.plot_packing">
-<em class="property">class </em><code class="sig-prename descclassname">plot_packing.</code><code class="sig-name descname">plot_packing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">passer_team_df</span></em>, <em class="sig-param"><span class="n">packing_df</span></em>, <em class="sig-param"><span class="n">col_label_x</span></em>, <em class="sig-param"><span class="n">col_label_y</span></em>, <em class="sig-param"><span class="n">packing_rate</span></em>, <em class="sig-param"><span class="n">pass_pressure</span></em>, <em class="sig-param"><span class="n">sender_xy</span></em>, <em class="sig-param"><span class="n">receiver_xy</span></em>, <em class="sig-param"><span class="n">x_range</span></em>, <em class="sig-param"><span class="n">y_range</span></em>, <em class="sig-param"><span class="n">path_to_save</span></em>, <em class="sig-param"><span class="n">pass_frame</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bcg_img</span><span class="o">=</span><span class="default_value">'/images/pitch/pitch.jpg'</span></em>, <em class="sig-param"><span class="n">plot_hint</span><span class="o">=</span><span class="default_value">'off'</span></em>, <em class="sig-param"><span class="n">file_name</span><span class="o">=</span><span class="default_value">'packing'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/plot_packing.html#plot_packing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plot_packing.plot_packing" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">plot_packing.</code><code class="sig-name descname">plot_packing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">passer_team_df</span></em>, <em class="sig-param"><span class="n">packing_df</span></em>, <em class="sig-param"><span class="n">col_label_x</span></em>, <em class="sig-param"><span class="n">col_label_y</span></em>, <em class="sig-param"><span class="n">packing_rate</span></em>, <em class="sig-param"><span class="n">pass_pressure</span></em>, <em class="sig-param"><span class="n">sender_xy</span></em>, <em class="sig-param"><span class="n">receiver_xy</span></em>, <em class="sig-param"><span class="n">x_range</span></em>, <em class="sig-param"><span class="n">y_range</span></em>, <em class="sig-param"><span class="n">path_to_save</span></em>, <em class="sig-param"><span class="n">pass_frame</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bcg_img</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">plot_hint</span><span class="o">=</span><span class="default_value">'off'</span></em>, <em class="sig-param"><span class="n">file_name</span><span class="o">=</span><span class="default_value">'packing'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/plot_packing.html#plot_packing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plot_packing.plot_packing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the player location on the pitch and highlight the defending team players
 that might have been calculated in packing. Turning on/off plot_hint will show 
 how packing was calculated.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>passer_team_df</strong><span class="classifier">DataFrame</span></dt><dd><p>DataFrame with the passing team coordinates</p>
+<dt><strong>passer_team_df</strong><span class="classifier">DataFrame</span></dt><dd><p>DataFrame with the passing team coordinates
+Column name with <cite>id</cite> or <cite>_id</cite> are considered player ids (Only 1 column with such name).</p>
 </dd>
-<dt><strong>packing_df</strong><span class="classifier">DataFrame</span></dt><dd><p>Resulting DataFrame from packing module (should not be altered)</p>
+<dt><strong>packing_df</strong><span class="classifier">DataFrame</span></dt><dd><p>Resulting DataFrame from packing module (should not be altered).
+Column name with <cite>id</cite> or <cite>_id</cite> are considered player ids (Only 1 column with such name).</p>
 </dd>
 <dt><strong>col_label_x</strong><span class="classifier">String</span></dt><dd><p>The column label for defending team’s X coordinate in defending_team_xy</p>
 </dd>
@@ -442,15 +445,15 @@ how packing was calculated.</p>
 </dd>
 <dt><strong>receiver_xy</strong><span class="classifier">ndarray</span></dt><dd><p>Receiver XY coordinates as numpy array</p>
 </dd>
-<dt><strong>x_range</strong><span class="classifier">[start, end] list</span></dt><dd><p>List of range of x-axis of the pitch, Eg: [0, 100] or [-5250, 5250]</p>
+<dt><strong>x_range</strong><span class="classifier">[start, end] list</span></dt><dd><p>List of range of x-axis of the pitch, Eg: <cite>[0, 100]</cite> or <cite>[-5250, 5250]</cite></p>
 </dd>
-<dt><strong>y_range</strong><span class="classifier">[start, end] list</span></dt><dd><p>List of range of y-axis of the pitch, Eg: [0, 100] or [3400, -3400]</p>
+<dt><strong>y_range</strong><span class="classifier">[start, end] list</span></dt><dd><p>List of range of y-axis of the pitch, Eg: <cite>[0, 100]`or `[3400, -3400]</cite></p>
 </dd>
-<dt><strong>path_to_save :</strong></dt><dd><p>A path to save the output html file. Path should end with <cite>/</cite></p>
+<dt><strong>path_to_save :</strong></dt><dd><p>A path to save the output html file. Path should end with a <cite>/</cite></p>
 </dd>
 <dt><strong>pass_frame</strong><span class="classifier">String, Optional, default None</span></dt><dd><p>Identifier to show pass event time</p>
 </dd>
-<dt><strong>bcg_img</strong><span class="classifier">String, default ‘/images/pitch/pitch.jpg’</span></dt><dd><p>Path to background image</p>
+<dt><strong>bcg_img</strong><span class="classifier">String, default None</span></dt><dd><p>Path to background image</p>
 </dd>
 <dt><strong>plot_hint</strong><span class="classifier">String, default <cite>off</cite></span></dt><dd><p>To display the logic behind calculating packing</p>
 </dd>
@@ -461,10 +464,9 @@ how packing was calculated.</p>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
 <dt>show() :</dt><dd><p>Plot is shown on the browser. If module is run on jupyter notebook,
-plot will be visible within the notebook.</p>
+plot will be shown in the notebook.</p>
 </dd>
-<dt>save() :</dt><dd><p>Plot saved locally to folder <cite>plots</cite>. If the folder does not exist, 
-folder is created. 
+<dt>save() :</dt><dd><p>Plot saved locally to path specified under <cite>path_to_save</cite>.
 Note: If <cite>file_name</cite> is not changed every time module is run, plots
 will be overwritten.</p>
 </dd>

@@ -121,12 +121,12 @@
   <div class="section" id="football-packing">
 <h1>Football Packing<a class="headerlink" href="#football-packing" title="Permalink to this headline">¶</a></h1>
 <p>This is a python package to calculate packing rate for a given <a class="reference external" href="https://en.wikipedia.org/wiki/Passing_(association_football)">pass</a>
-in soccer. This is a variation of the metric created by <a class="reference external" href="https://www.impect.com/">Impect</a>.</p>
+in soccer. This is a variation of the original metric created by <a class="reference external" href="https://www.impect.com/">Impect</a>.</p>
 <p>One of the main variation of this metric from other traditional ones is that only the defending players
-who are in the scope of the pass are considered for packing and not all the defenders on the pitch.
-Traditionally, if a defender’s line is cut by a pass,
-they’re considered to be packed (+1 for that defender) even if the defender is not near the line of pass (pass is on one
-side of the pitch and defender is far away). So if an attacking player makes a long pass beyond the entire defense,
+who are in the scope of the pass are considered for packing and not all the defenders on the pitch.</p>
+<p>Traditionally, if a defender’s line is cut by a pass, they’re considered to be packed (+1 for that defender)
+even if the defender is not near the line of pass (pass is on one
+side of the pitch and defender is far away).So if an attacking player makes a long pass beyond the entire defense,
 then all the defenders would be considered as packed (+1), but in truth only few of the players would be near the
 line of pass and could have an impact on the outcome of the pass/play.</p>
 <p>Also for different types of passes (forward, back &amp; side) packing is still calculated but a constant is
@@ -164,7 +164,7 @@ multiplied with the packing value based on the type of pass.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This is still a work in progress as there are certain edge cases where packing rate could be incorrect.
-Please provide a feedback/comment on twitter/github if you encounter any errors.</p>
+Please provide a feedback/comment on Twitter/GitHub if you encounter any errors.</p>
 </div>
 <div class="line-block">
 <div class="line"><br /></div>
