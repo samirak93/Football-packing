@@ -106,7 +106,9 @@ class calculate_packing:
                 method_1 = 0
 
             return pd.to_numeric(pd.Series({'triangle_area': (area_ab + area_bc + area_cd + area_da),
-                                            'rect_length': ab, 'rect_width': bc, 'method_1': method_1}),
+                                            'rect_length': ab, 'rect_width': bc,
+                                            'area_diff': ((area_ab + area_bc + area_cd + area_da) - area_rect),
+                                            'method_1': method_1}),
                                  downcast='integer')
 
         # rectangle edges
@@ -115,12 +117,12 @@ class calculate_packing:
         cd = np.round(np.linalg.norm(box_c-box_d), 5)
         da = np.round(np.linalg.norm(box_d-box_a), 5)
 
-        df_method1[['triangle_area', 'rect_length', 'rect_width', 'method_1']
+        df_method1[['triangle_area', 'rect_length', 'rect_width', 'area_diff', 'method_1']
                    ] = df_method1.apply(checkBoundary, axis=1)
 
         return df_method1
 
-    def method_2(self, sender_xy, receiver_xy, df_method2, col_label_x, col_label_y, method2_radius=0.15):
+    def method_2(self, sender_xy, receiver_xy, df_method2, col_label_x, col_label_y, method2_radius=0.12):
         """
         Method 2 :
         Check if player is within a certain distance to line of pass, so that
@@ -175,7 +177,7 @@ class calculate_packing:
             rect_length = df['rect_length']
             rect_width = df['rect_width']
 
-            if (rect_length <= 0.01) or (rect_width <= 0.01):
+            if (rect_length <= 0.07) or (rect_width <= 0.07):
                 if (dist_dl <= method2_radius):
                     method_2 = 1
                 else:
@@ -233,7 +235,7 @@ class calculate_packing:
             angle_r = np.round(math.degrees(
                 math.acos((d_sr**2 + d_rd**2 - d_sd**2)/(2.0 * d_sr * d_rd))))
 
-            if (angle_s <= 100) & (angle_r <= 100):
+            if (angle_s <= 105) & (angle_r <= 105):
                 method_3 = 1
             # elif ((angle_s <= 30) & (angle_r <= 150)) or ((angle_r <= 30) & (angle_s <= 150)):
             #     method_3 = 1
@@ -273,9 +275,11 @@ class calculate_packing:
         rect_width = df_update['rect_width'].unique()[0]
 
         if (rect_length <= 0.07) or (rect_width <= 0.07):
-            df_update.loc[:, 'method_1'] = np.where(((df_update['method_1'] == 0) &
-                                                     (df_update['method_2'] == 1) &
-                                                     (df_update['method_3'] == 1)), 1, df_update['method_1'])
+            df_update.loc[:, 'method_1_update'] = np.where(((df_update['method_1'] == 0) &
+                                                            (df_update['method_2'] == 1) &
+                                                            (df_update['method_3'] == 1)), 1, df_update['method_1'])
+        else:
+            df_update.loc[:, 'method_1_update'] = df_update['method_1']
 
         return df_update
 
@@ -304,7 +308,7 @@ class calculate_packing:
             Total count of defenders applying pressure on the sender & receiver, but not involved in
             packing rate.
         """
-        defend_xy = defending_team_xy[defending_team_xy['packing'] == 0][[
+        defend_xy = defending_team_xy[defending_team_xy['packing_rate'] == 0][[
             col_label_x, col_label_y]].values
         sender_def_cdist = distance.cdist(sender_xy, defend_xy)
         receiver_def_cdist = distance.cdist(receiver_xy, defend_xy)
@@ -381,11 +385,12 @@ class packing:
         self.col_label_x = col_label_x
         self.col_label_y = col_label_y
         self.defend_side = defend_side.lower()
-        self.goal_center = {'left': [-5250, 0], 'right': [5250, 0]}
+        self.goal_center = {'left': [0, 0.5], 'right': [1, 0.5]}
         self.pass_pressure = None
 
     def get_packing(self):
 
+        self.defending_team_xy_copy = self.defending_team_xy.copy()
         if self.sender_xy.size == 0:
             raise RuntimeError(
                 "Sender coordinates are empty. A valid array with [x, y] should be provided")
@@ -394,35 +399,40 @@ class packing:
             raise RuntimeError(
                 "Receiver coordinates are empty. A valid array with [x, y] should be provided")
 
-        if self.defending_team_xy.size == 0:
+        if self.defending_team_xy_copy.size == 0:
             raise RuntimeError(
                 "Defending team coordinates are empty. A valid dataframe with [x, y] should be provided for at least 1 player")
 
-        if not isinstance(self.defending_team_xy, pd.DataFrame):
+        if not isinstance(self.defending_team_xy_copy, pd.DataFrame):
             raise RuntimeError(
                 "Defending team coordinates should be a dataframe with x and y values.")
 
-        defend_xy_cols = self.defending_team_xy.columns.tolist()
+        defend_xy_cols = self.defending_team_xy_copy.columns.tolist()
+
         if self.col_label_x not in defend_xy_cols or self.col_label_x not in defend_xy_cols:
             raise RuntimeError(
                 f"Either {self.col_label_x} or {self.col_label_y} is not a column in defending_team_xy. Please provide valid column names")
 
-        concat_location = np.concatenate([self.defending_team_xy[[self.col_label_x, self.col_label_y]].values,
-                                          self.sender_xy.reshape(
-            1, -1), self.receiver_xy.reshape(1, -1),
-            np.array(self.goal_center[self.defend_side]).reshape(1, -1)])
-        min_max_scaler = preprocessing.MinMaxScaler()
-        defending_team_xy_scaled = min_max_scaler.fit_transform(
-            concat_location)
+        self.goal_xy = self.goal_center[self.defend_side]
 
-        self.defending_team_xy.drop(
-            [self.col_label_x, self.col_label_y], axis=1, inplace=True)
-        self.defending_team_xy[self.col_label_x], self.defending_team_xy[
-            self.col_label_y] = defending_team_xy_scaled[:-3, 0], defending_team_xy_scaled[:-3, 1]
-
-        self.sender_xy = defending_team_xy_scaled[-3]
-        self.receiver_xy = defending_team_xy_scaled[-2]
-        self.goal_xy = defending_team_xy_scaled[-1]
+        if max(self.defending_team_xy_copy[[self.col_label_x]].values) > 1 or \
+                max(self.defending_team_xy_copy[[self.col_label_y]].values) > 1:
+            concat_location = np.concatenate([
+                self.defending_team_xy_copy[[
+                    self.col_label_x, self.col_label_y]].values,
+                self.sender_xy.reshape(1, -1),
+                self.receiver_xy.reshape(1, -1)
+            ])
+            min_max_scaler = preprocessing.MinMaxScaler()
+            defending_team_xy_scaled = min_max_scaler.fit_transform(
+                concat_location)
+            self.defending_team_xy_copy.drop(
+                [self.col_label_x, self.col_label_y], axis=1, inplace=True)
+            self.defending_team_xy_copy[self.col_label_x], self.defending_team_xy_copy[
+                self.col_label_y] = defending_team_xy_scaled[:-2, 0], defending_team_xy_scaled[:-2, 1]
+            print(defending_team_xy_scaled)
+            self.sender_xy = defending_team_xy_scaled[-2]
+            self.receiver_xy = defending_team_xy_scaled[-1]
 
         box_a = np.asarray(self.sender_xy)  # sender
         box_b = np.asarray(
@@ -437,7 +447,7 @@ class packing:
             self.sender_xy, self.receiver_xy, self.goal_xy, self.defend_side)
 
         self.packing_df = cp.method_1(
-            box_a, box_b, box_c, box_d, self.defending_team_xy.copy(), col_label_x=self.col_label_x,
+            box_a, box_b, box_c, box_d, self.defending_team_xy_copy.copy(), col_label_x=self.col_label_x,
             col_label_y=self.col_label_y)
 
         self.packing_df = cp.method_2(
@@ -448,35 +458,31 @@ class packing:
 
         self.packing_df = cp.update_method_1(self.packing_df)
 
-        self.packing_df['packing'] = np.where(
-            self.packing_df[["method_1", "method_2", "method_3"]].sum(axis=1) == 3, 1, 0)
+        self.packing_df['packing_rate'] = np.where(
+            self.packing_df[["method_1_update", "method_2", "method_3"]].sum(axis=1) == 3, 1, 0)
 
         # If back pass, multiple packing by -1
         if self.pass_direction == 'Back':
             self.packing_df.loc[:,
-                                'packing'] = self.packing_df.loc[:, 'packing']*-1.0
+                                'packing_rate'] = self.packing_df.loc[:, 'packing_rate']*-1.0
         elif self.pass_direction == 'Side':
             self.packing_df.loc[:,
-                                'packing'] = self.packing_df.loc[:, 'packing']*0.5
+                                'packing_rate'] = self.packing_df.loc[:, 'packing_rate']*0.5
 
-        self.packing_rate = self.packing_df['packing'].sum()
+        self.packing_rate = self.packing_df['packing_rate'].sum()
 
         self.pass_pressure = cp.get_pass_pressure(self.sender_xy.reshape(1, -1), self.receiver_xy.reshape(1, -1),
                                                   self.packing_df, self.col_label_x,
                                                   self.col_label_y,)
 
-        defending_team_xy_unscaled = min_max_scaler.inverse_transform(
-            self.packing_df[[self.col_label_x, self.col_label_y]].values)
-        self.packing_df.drop(
-            [self.col_label_x, self.col_label_y], axis=1, inplace=True)
-        self.packing_df[self.col_label_x], self.packing_df[
-            self.col_label_y] = defending_team_xy_unscaled[:, 0], defending_team_xy_unscaled[:, 1]
+        if max(self.defending_team_xy[[self.col_label_x]].values) > 1 or \
+                max(self.defending_team_xy[[self.col_label_y]].values) > 1:
+
+            defending_team_xy_unscaled = min_max_scaler.inverse_transform(
+                self.packing_df[[self.col_label_x, self.col_label_y]].values)
+            self.packing_df.drop(
+                [self.col_label_x, self.col_label_y], axis=1, inplace=True)
+            self.packing_df[self.col_label_x], self.packing_df[
+                self.col_label_y] = defending_team_xy_unscaled[:, 0], defending_team_xy_unscaled[:, 1]
 
         return self.packing_df, self.packing_rate, self.pass_pressure
-
-
-# %%
-# set([6]) - set ([])
-set([6, 5, 4]).symmetric_difference(set([5, 6, 4, 7]))
-
-# %%

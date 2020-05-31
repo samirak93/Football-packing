@@ -196,13 +196,10 @@ class belgium:
         pack = packing(sender_xy, receiver_xy, self.def_team_xy_df,
                        col_label_x='defender_team_x', col_label_y='defender_team_y', defend_side=self.defend_side)
         self.packing_df, self.packing_rate, self.pass_pressure = pack.get_packing()
-
         print(self.packing_df)
-
-        passing_team_xy = pd.DataFrame({'passer_team_x': self.df['passer_team_x'].tolist()[
-            0], 'passer_team_y': self.df['passer_team_y'].tolist()[0], 'passer_team_id': self.df['passer_team_id'].tolist()[0]})
-
-        self.packing_players = self.packing_df[self.packing_df.packing == 1].index.values
+        passing_team_xy = pd.DataFrame({'passer_team_x': self.df['passer_team_x'].tolist()[0],
+                                        'passer_team_y': self.df['passer_team_y'].tolist()[0],
+                                        'passer_team_id': self.df['passer_team_id'].tolist()[0]})
 
         plot = plot_packing(passer_team_df=passing_team_xy, packing_df=self.packing_df, col_label_x='defender_team_x',
                             col_label_y='defender_team_y', packing_rate=self.packing_rate, pass_pressure=self.pass_pressure,
@@ -212,9 +209,10 @@ class belgium:
 
     def execute_pack(self):
         # Looping functions
-        steps = (self.process_data(),
-                 self.packing_calculate(),
-                 )
+        steps = (
+            self.process_data(),
+            self.packing_calculate(),
+        )
 
         for step in steps:
             step
@@ -230,9 +228,8 @@ if __name__ == '__main__':
     df = df.loc[(df['pass_success'] == 1) & (df['sender_id'] !=
                                              df['receiver_id']), :].copy().reset_index(drop=True)
     # df = df.sample(1).copy()
-    df = df.iloc[3680:3681, :].copy()
+    df = df.iloc[9499:9500, :].copy()
     play_id = str(df.index.values[0])
-    print(play_id)
     df = df.reset_index(drop=True)
     pack_belgium = belgium(df, play_id)
     pack_belgium.execute_pack()

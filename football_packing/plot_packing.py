@@ -202,9 +202,9 @@ class plot_packing():
             x = self.packing_df.iloc[i][self.col_label_x]
             y = self.packing_df.iloc[i][self.col_label_y]
             id = self.packing_df.iloc[i][defend_team_cols_id]
-            edge_col = colors[self.packing_df.iloc[i]['packing']]
-            fill_alpha = alpha[self.packing_df.iloc[i]['packing']]
-            circle_radius = radius[self.packing_df.iloc[i]['packing']]
+            edge_col = colors[self.packing_df.iloc[i]['packing_rate']]
+            fill_alpha = alpha[self.packing_df.iloc[i]['packing_rate']]
+            circle_radius = radius[self.packing_df.iloc[i]['packing_rate']]
 
             source_def_team = ColumnDataSource(
                 data={'x': [x], 'y': [y], 'id': [id], 'edge_col': [edge_col], 'fill_alpha': [fill_alpha], 'radius': [circle_radius]})
@@ -238,8 +238,13 @@ class plot_packing():
         plot.title.align = 'center'
         plot.toolbar.autohide = True
         plot.min_border = 40
-        # plot.min_border_right = 30
-        # plot.min_border_top = 30
-        # plot.min_border_bottom = 30
+        if self.pass_frame != None:
+            caption1 = Label(text=f"Pass Frame: {str(self.pass_frame)}",
+                             text_font_size="8pt",
+                             x=min(self.x_range) +
+                             (0.01*(self.x_range[1]-self.x_range[0])),
+                             y=self.y_range[0] +
+                             (0.01*(self.y_range[1]-self.y_range[0])))
+            plot.add_layout(caption1)
 
         self.save_plots(plot)
