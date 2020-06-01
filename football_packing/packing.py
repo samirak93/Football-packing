@@ -310,9 +310,9 @@ class calculate_packing:
         receiver_def_cdist = distance.cdist(receiver_xy, defend_xy)
 
         sender_ids = np.array(
-            np.where(sender_def_cdist[0] <= 0.1)).tolist()[0]
+            np.where(sender_def_cdist[0] <= 0.05)).tolist()[0]
         receiver_ids = np.array(
-            np.where(receiver_def_cdist[0] <= 0.1)).tolist()[0]
+            np.where(receiver_def_cdist[0] <= 0.05)).tolist()[0]
 
         pass_pressure_players = list(
             set(sender_ids).symmetric_difference(set(receiver_ids)))
@@ -333,7 +333,8 @@ class packing:
         Receiver XY coordinates as numpy array
     defending_team_xy : DataFrame
         DataFrame with the defending team coordinates
-        Do not include any passing team XY or other columns as it'll impact plotting function.
+        Do not include any passing team XY or other columns as it'll have an impact on 
+        plotting function.
     col_label_x : String
         The column label for defending team's X coordinate in `defending_team_xy`
     col_label_y : String
@@ -350,9 +351,9 @@ class packing:
         Returns a dataframe with the following new columns along with existing columns
         that was provided.
         New Columns :
-        [`triangle_area`, `rect_length`, `rect_width`, `method_1`, `method2_dist`,
-        `method_2`, `method2_angle_s`, `method2_angle_r`, `method_3`, `packing`,
-        `col_label_x`, `col_label_y`]
+        [`triangle_area`, `rect_length`, `rect_width`, `area_diff`, `method_1`, `method2_dist`,
+        `method_2`, `method3_angle_s`, `method3_angle_r`, `method_3`, `method_1_update`,
+        `packing_rate`, `col_label_x`, `col_label_y`]
     packing_rate : Float
         Packing rate for that given pass scenario
         Packing rate will be multiplied by a factor based on the pass type:
@@ -427,7 +428,6 @@ class packing:
                 [self.col_label_x, self.col_label_y], axis=1, inplace=True)
             self.defending_team_xy_copy[self.col_label_x], self.defending_team_xy_copy[
                 self.col_label_y] = defending_team_xy_scaled[:-2, 0], defending_team_xy_scaled[:-2, 1]
-            print(defending_team_xy_scaled)
             self.sender_xy = defending_team_xy_scaled[-2]
             self.receiver_xy = defending_team_xy_scaled[-1]
 

@@ -9,4 +9,4 @@ behind the metric calculations are explained here :ref:`in this section.<How pac
 
 For any questions/feedback, reach out to me on twitter `@SamiraK93 <https://twitter.com/Samirak93>`__.
 
-If you'd like to file any issues/updates, submit a PR on GitHub.
+If you'd like to file any issues/updates, submit a PR on `GitHub <https://github.com/samirak93/Football-packing>`__.

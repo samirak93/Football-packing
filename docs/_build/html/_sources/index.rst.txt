@@ -7,6 +7,9 @@ in soccer. This is a variation of the original metric created by `Impect <https:
 
 One of the main variation of this metric from other traditional ones is that only the defending players 
 who are in the scope of the pass are considered for packing and not all the defenders on the pitch. 
+The other difference would be the fact that for defenders, their lines on the pitch are considered with respect 
+to the pass direction. :ref:`Refer to the examples<Sample Scenarios>` on more details
+about these differences. 
 
 Traditionally, if a defender's line is cut by a pass, they're considered to be packed (+1 for that defender) 
 even if the defender is not near the line of pass (pass is on one 

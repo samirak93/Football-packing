@@ -123,7 +123,10 @@
 <p>This is a python package to calculate packing rate for a given <a class="reference external" href="https://en.wikipedia.org/wiki/Passing_(association_football)">pass</a>
 in soccer. This is a variation of the original metric created by <a class="reference external" href="https://www.impect.com/">Impect</a>.</p>
 <p>One of the main variation of this metric from other traditional ones is that only the defending players
-who are in the scope of the pass are considered for packing and not all the defenders on the pitch.</p>
+who are in the scope of the pass are considered for packing and not all the defenders on the pitch.
+The other difference would be the fact that for defenders, their lines on the pitch are considered with respect
+to the pass direction. <a class="reference internal" href="misc/examples.html#sample-scenarios"><span class="std std-ref">Refer to the examples</span></a> on more details
+about these differences.</p>
 <p>Traditionally, if a defender’s line is cut by a pass, they’re considered to be packed (+1 for that defender)
 even if the defender is not near the line of pass (pass is on one
 side of the pitch and defender is far away).So if an attacking player makes a long pass beyond the entire defense,
@@ -146,13 +149,14 @@ multiplied with the packing value based on the type of pass.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="misc/modules.html">Modules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="misc/modules.html#calculate-packing">Calculate packing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc/modules.html#calculate-packing">Calculate Packing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="misc/modules.html#visualize-packing">Visualize Packing</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="misc/examples.html">Usage &amp; Examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="misc/examples.html#usage">Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="misc/examples.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc/examples.html#sample-scenarios">Sample Scenarios</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="misc/license.html">License</a></li>

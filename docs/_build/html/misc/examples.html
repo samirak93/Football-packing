@@ -82,7 +82,14 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#examples">Examples</a><ul>
-<li><a class="reference internal" href="#belgium-py">Belgium.py</a></li>
+<li><a class="reference internal" href="#belgium-py">belgium.py</a></li>
+<li><a class="reference internal" href="#metrica-py">metrica.py</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sample-scenarios">Sample Scenarios</a><ul>
+<li><a class="reference internal" href="#scenario-1">Scenario 1:</a></li>
+<li><a class="reference internal" href="#scenario-2">Scenario 2:</a></li>
+<li><a class="reference internal" href="#scenario-3">Scenario 3:</a></li>
 </ul>
 </li>
 </ul>
@@ -123,7 +130,14 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#examples">Examples</a><ul>
-<li><a class="reference internal" href="#belgium-py">Belgium.py</a></li>
+<li><a class="reference internal" href="#belgium-py">belgium.py</a></li>
+<li><a class="reference internal" href="#metrica-py">metrica.py</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sample-scenarios">Sample Scenarios</a><ul>
+<li><a class="reference internal" href="#scenario-1">Scenario 1:</a></li>
+<li><a class="reference internal" href="#scenario-2">Scenario 2:</a></li>
+<li><a class="reference internal" href="#scenario-3">Scenario 3:</a></li>
 </ul>
 </li>
 </ul>
@@ -147,25 +161,28 @@
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="get-packing-rate">
 <h3>Get packing rate<a class="headerlink" href="#get-packing-rate" title="Permalink to this headline">¶</a></h3>
-<p>The entire documentation can be found <a class="reference internal" href="modules.html#calculate-packing"><span class="std std-ref">under modules.</span></a></p>
+<p>The documentation can be found <a class="reference internal" href="modules.html#calculate-packing"><span class="std std-ref">under modules.</span></a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">football_packing</span> <span class="k">as</span> <span class="nn">fp</span>
 
 <span class="n">pack</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">packing</span><span class="p">(</span><span class="n">sender_xy</span><span class="p">,</span> <span class="n">receiver_xy</span><span class="p">,</span> <span class="n">def_team_xy_df</span><span class="p">,</span>
                 <span class="n">col_label_x</span><span class="o">=</span><span class="s1">&#39;defender_team_x&#39;</span><span class="p">,</span> <span class="n">col_label_y</span><span class="o">=</span><span class="s1">&#39;defender_team_y&#39;</span><span class="p">,</span>
-                <span class="n">defend_side</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">defend_side</span><span class="p">)</span>
+                <span class="n">defend_side</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
 <span class="n">packing_df</span><span class="p">,</span> <span class="n">packing_rate</span><span class="p">,</span> <span class="n">pass_pressure</span> <span class="o">=</span> <span class="n">pack</span><span class="o">.</span><span class="n">get_packing</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="plot-packing">
 <h3>Plot packing<a class="headerlink" href="#plot-packing" title="Permalink to this headline">¶</a></h3>
-<p>The entire documentation can be found <a class="reference internal" href="modules.html#visualize-packing"><span class="std std-ref">under modules.</span></a></p>
+<p>The documentation can be found <a class="reference internal" href="modules.html#visualize-packing"><span class="std std-ref">under modules.</span></a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">football_packing</span> <span class="k">as</span> <span class="nn">fp</span>
 
-<span class="n">plot</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">plot_packing</span><span class="p">(</span><span class="n">passer_team_df</span><span class="o">=</span><span class="n">passing_team_xy</span><span class="p">,</span> <span class="n">packing_df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">packing_df</span><span class="p">,</span> <span class="n">col_label_x</span><span class="o">=</span><span class="s1">&#39;defender_team_x&#39;</span><span class="p">,</span>
-                        <span class="n">col_label_y</span><span class="o">=</span><span class="s1">&#39;defender_team_y&#39;</span><span class="p">,</span> <span class="n">packing_rate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">packing_rate</span><span class="p">,</span> <span class="n">pass_pressure</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pass_pressure</span><span class="p">,</span>
-                        <span class="n">sender_xy</span><span class="o">=</span><span class="n">sender_xy</span><span class="p">,</span> <span class="n">receiver_xy</span><span class="o">=</span><span class="n">receiver_xy</span><span class="p">,</span> <span class="n">x_range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">5250</span><span class="p">,</span> <span class="mi">5250</span><span class="p">],</span> <span class="n">y_range</span><span class="o">=</span><span class="p">[</span><span class="mi">3400</span><span class="p">,</span> <span class="o">-</span><span class="mi">3400</span><span class="p">],</span>
-                        <span class="n">path_to_save</span><span class="o">=</span><span class="n">dir_path</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">pass_frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">play_id</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;belgium&#39;</span><span class="p">,</span> <span class="n">plot_hint</span><span class="o">=</span><span class="s1">&#39;on&#39;</span><span class="p">)</span>
+<span class="n">plot</span> <span class="o">=</span> <span class="n">plot_packing</span><span class="p">(</span><span class="n">passer_team_df</span><span class="o">=</span><span class="n">passing_team_xy</span><span class="p">,</span> <span class="n">packing_df</span><span class="o">=</span><span class="n">packing_df</span><span class="p">,</span>
+                        <span class="n">col_label_x</span><span class="o">=</span><span class="s1">&#39;defender_team_x&#39;</span><span class="p">,</span> <span class="n">col_label_y</span><span class="o">=</span><span class="s1">&#39;defender_team_y&#39;</span><span class="p">,</span>
+                        <span class="n">packing_rate</span><span class="o">=</span><span class="n">packing_rate</span><span class="p">,</span> <span class="n">pass_pressure</span><span class="o">=</span><span class="n">pass_pressure</span><span class="p">,</span>
+                        <span class="n">sender_xy</span><span class="o">=</span><span class="n">sender_xy</span><span class="p">,</span> <span class="n">receiver_xy</span><span class="o">=</span><span class="n">receiver_xy</span><span class="p">,</span>
+                        <span class="n">x_range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">5250</span><span class="p">,</span> <span class="mi">5250</span><span class="p">],</span> <span class="n">y_range</span><span class="o">=</span><span class="p">[</span><span class="mi">3400</span><span class="p">,</span> <span class="o">-</span><span class="mi">3400</span><span class="p">],</span>
+                        <span class="n">path_to_save</span><span class="o">=</span><span class="n">dir_path</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">pass_frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">play_id</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;belgium&#39;</span><span class="p">,</span>
+                        <span class="n">bcg_img</span><span class="o">=</span><span class="s1">&#39;/images/pitch/pitch.jpg&#39;</span><span class="p">)</span>
 <span class="n">plot</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -176,15 +193,79 @@
 </div>
 <div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
-<p>There are 2 examples present in Packing/Examples folder.</p>
+<p>There are 2 examples present in Examples folder under the main football_packing folder .</p>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
 <div class="section" id="belgium-py">
-<h3>Belgium.py<a class="headerlink" href="#belgium-py" title="Permalink to this headline">¶</a></h3>
+<h3>belgium.py<a class="headerlink" href="#belgium-py" title="Permalink to this headline">¶</a></h3>
 <p>(Data Source: <a class="reference external" href="https://github.com/JanVanHaaren/mlsa18-pass-prediction">GitHub</a>)</p>
-<p>Run the <code class="code docutils literal notranslate"><span class="pre">belgium.py</span></code> from the examples folder under main football_packing folder. A html file,
-<code class="code docutils literal notranslate"><span class="pre">belgium.html</span></code>, with the plot will be created in the same folder.</p>
+<p>Run the <code class="code docutils literal notranslate"><span class="pre">belgium.py</span></code> from the examples folder. A html file, <code class="code docutils literal notranslate"><span class="pre">belgium.html</span></code>,
+with the plot will be saved in the same folder and plot will also open on browser.</p>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="metrica-py">
+<h3>metrica.py<a class="headerlink" href="#metrica-py" title="Permalink to this headline">¶</a></h3>
+<p>(Data Source: <a class="reference external" href="https://github.com/metrica-sports/sample-data">GitHub</a>)</p>
+<p>To run the <code class="code docutils literal notranslate"><span class="pre">metrica.py</span></code> from the examples folder you would have to provide 2 arguments. First one is the path
+to the game level data and the second argument is the path to the event level data.
+Use this tidy data - <a class="reference external" href="https://drive.google.com/drive/folders/1BGLHbe7DB_NGZxitjJAQxu2-N-B4Zk3s">Credit - Eliot McKinley</a>
+for the game level data and the events data can be downloaded from the Metrica GitHub page.</p>
+<p>The sample command to run the file would be like below:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 .../metrica.py .../metrica_tracking_tidy.csv .../Sample_Game_1_RawEventsData.csv
+</pre></div>
+</div>
+<p>If you’re using Conda, the python3 argument would be replaced with something like this
+<code class="code docutils literal notranslate"><span class="pre">/Users/{user_name}/opt/anaconda3/bin/python</span></code> on a mac.</p>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+</div>
+<div class="section" id="sample-scenarios">
+<span id="link-target4"></span><h2>Sample Scenarios<a class="headerlink" href="#sample-scenarios" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="scenario-1">
+<span id="link-target5"></span><h3>Scenario 1:<a class="headerlink" href="#scenario-1" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="../_images/belgium_8305.png"><img alt="Belgium-8305" src="../_images/belgium_8305.png" style="width: 600px; height: 400px;" /></a>
+<p>Based on the calculation, players <code class="code docutils literal notranslate"><span class="pre">15,</span> <span class="pre">18</span> <span class="pre">&amp;</span> <span class="pre">20</span></code> are the closest defenders to the line of pass.
+Player 26 should also have been marked as +1 for packing, but looking from the perspective of the sender &amp; receiver,
+26 is still behind the receiver (figure below shows that 26 will intersect the pass after the pass in extended beyond
+receiver.</p>
+<a class="reference internal image-reference" href="../_images/belgium_8305_closer.png"><img alt="Belgium-8305-closer" src="../_images/belgium_8305_closer.png" style="width: 400px; height: 300px;" /></a>
+<p>If you’d considered the defender’s lines to be vertical, then 26 would be considered.</p>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="scenario-2">
+<span id="link-target6"></span><h3>Scenario 2:<a class="headerlink" href="#scenario-2" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="../_images/belgium_6067.png"><img alt="Belgium-6067" src="../_images/belgium_6067.png" style="width: 600px; height: 400px;" /></a>
+<p>In this scenario, defender 24 satisfies all the conditions. Defender 18 satisfies 2 of the conditions (method 2 &amp; 3)
+but fails the first condition where the player is too far beyond the scope of the pass (green rectangle). The blue circle
+on player 24 shows his distance to the pass breaking the line of pass.
+|</p>
+</div>
+<div class="section" id="scenario-3">
+<h3>Scenario 3:<a class="headerlink" href="#scenario-3" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="../_images/belgium_3680.png"><img alt="Belgium-6067" src="../_images/belgium_3680.png" style="width: 600px; height: 400px;" /></a>
+<p>One of the reason side passes were also included is to consider the fact that not all side passes are bad
+(some might still lead to a goal scoring chance). In this scenario, the packing is 0.5/player. Although,
+the scope fo the pass (rectangle box) is small, having that threshold would include defenders who could be
+on the edges of the box (seen below).</p>
+<a class="reference internal image-reference" href="../_images/belgium_3680_closer.png"><img alt="Belgium-6067" src="../_images/belgium_3680_closer.png" style="width: 600px; height: 400px;" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is still a work in progress as there are certain edge cases where packing rate could be incorrect.
+Please leave a feedback/comment on Twitter/GitHub if you encounter any errors.</p>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
 </div>
 </div>
 </div>

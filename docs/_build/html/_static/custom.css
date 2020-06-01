@@ -1,7 +1,7 @@
 @import url("default.css");
 
 span.caption-text {
-    font-size: 20pt;
+    font-size: 18pt;
 }
 
 h1 {
@@ -10,11 +10,11 @@ h1 {
 }
 
 h2 {
-    font-size: 24px;
+    font-size: 28px;
 }
 
 h3 {
-    font-size: 24px;
+    font-size: 22px;
 }
 
 h4 {
@@ -30,6 +30,11 @@ body {
 
 a {
     color: dodgerblue;
+    text-decoration: none;
+}
+
+p {
+    font-size: 18px;
     text-decoration: none;
 }
 

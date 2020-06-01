@@ -4,18 +4,15 @@ from bokeh.models import ColumnDataSource, Label, LabelSet, Range1d, Title
 from bokeh.io import push_notebook, show, output_notebook
 from bokeh.layouts import row, gridplot
 
-from pathlib import Path
-
-import os
 from statistics import mean
+
 output_notebook()
 
 
 class plot_packing():
     """
     Plot the player location on the pitch and highlight the defending team players
-    that might have been calculated in packing. Turning on/off plot_hint will show 
-    how packing was calculated.
+    that might have been calculated in packing.
 
     Parameters
     ----------
@@ -44,16 +41,15 @@ class plot_packing():
     path_to_save : 
         A path to save the output html file. Path should end with a `/`
     pass_frame : String, Optional, default None
-        Identifier to show pass event time
+        Identifier to display pass event time on plot
     bcg_img : String, default None
         Path to background image
-    plot_hint : String, default `off`
-        To display the logic behind calculating packing
     file_name : String, default `packing`
         Filename to save the plot
 
     Returns
     ----------
+    Defending players who have been calcuated in packing will be marked in a green border.
     show() :
         Plot is shown on the browser. If module is run on jupyter notebook,
         plot will be shown in the notebook. 
@@ -78,7 +74,6 @@ class plot_packing():
             path_to_save,
             pass_frame=None,
             bcg_img=None,
-            plot_hint='off',
             file_name='packing'
     ):
         self.passer_team_df = passer_team_df
@@ -93,25 +88,14 @@ class plot_packing():
         self.x_range = x_range
         self.y_range = y_range
         self.pass_frame = pass_frame
-        self.plot_hint = plot_hint
         self.file_name = file_name
         self.path_to_save = path_to_save
         output_file(path_to_save + self.file_name +
                     ".html", title=self.file_name + " plot")
 
     def save_plots(self, plot):
-        """
-        Save/Show the plots
 
-        Parameters
-        ----------
-        plot : bokeh figure 
-
-        Returns
-        ----------
-        save()
-            plot save to the path_to_save path 
-        """
+        show(plot)
         save(plot)
         print(
             f"Plot successfully saved at {self.path_to_save+self.file_name+'.html'}")
@@ -211,10 +195,6 @@ class plot_packing():
             source_def_team = ColumnDataSource(
                 data={'x': [x], 'y': [y], 'id': [id], 'edge_col': [edge_col], 'fill_alpha': [fill_alpha], 'radius': [circle_radius]})
 
-            if self.plot_hint == 'on':
-                plot.circle(x='x', y='y', radius='radius',
-                            color='navy', alpha=0.1, source=source_def_team)
-
             plot.scatter('x', 'y',
                          size=17, fill_color='orangered', line_color='edge_col', line_width=3, source=source_def_team,
                          fill_alpha='fill_alpha')
@@ -224,15 +204,6 @@ class plot_packing():
                                             x_offset=-4.5, y_offset=-6, source=source_def_team, render_mode='canvas',
                                             text_font_size='8pt', text_color='white')
                 plot.add_layout(labels_pass_team)
-
-        if self.plot_hint == 'on':
-            # plot rectangles
-
-            plot.patches([[self.receiver_xy[0], self.receiver_xy[0],
-                           self.sender_xy[0], self.sender_xy[0]]],
-                         [[self.sender_xy[1], self.receiver_xy[1],
-                             self.receiver_xy[1], self.sender_xy[1]]],
-                         color="#B3DE69", fill_alpha=0.3)
 
         plot.axis.visible = False
         plot.xgrid.grid_line_color = None

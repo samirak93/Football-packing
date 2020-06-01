@@ -13,6 +13,8 @@
 
 # -- Project information -----------------------------------------------------
 import sphinx_bootstrap_theme
+from sphinx.writers.html import HTMLTranslator
+
 import sys
 import os
 project = 'Football Packing'

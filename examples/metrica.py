@@ -7,6 +7,7 @@
 * Last Updated: May-14-2020
 """
 import os
+import sys
 
 import pandas as pd
 import numpy as np
@@ -91,7 +92,6 @@ class metrica:
 
         random_index = random.choice(game_events.index.values)
         random_game_events = game_events[game_events.index == random_index]
-        print(f"random_index: {random_index}")
         random_end_frame = random_game_events['End Frame'].values[0]
         random_sender = random_game_events['From'].values[0]
         random_receiver = random_game_events['To'].values[0]
@@ -130,13 +130,14 @@ class metrica:
         pack = packing(sender_xy, receiver_xy,
                        defending_team_xy, col_label_x='x', col_label_y='y', defend_side=self.defend_side)
         self.packing_df, self.packing_rate, self.pass_pressure = pack.get_packing()
-        print(self.packing_df)
+
         plot = plot_packing(passer_team_df=passing_team_xy, packing_df=self.packing_df,
                             col_label_x='x', col_label_y='y',
                             packing_rate=self.packing_rate,  pass_pressure=self.pass_pressure,
                             sender_xy=sender_xy, receiver_xy=receiver_xy,
                             x_range=[0, 1], y_range=[1, 0], path_to_save=dir_path+'/',
-                            pass_frame=random_end_frame, file_name='metrica', plot_hint='off', )
+                            pass_frame=random_end_frame, file_name='metrica',
+                            bcg_img='/images/pitch/pitch.jpg')
 
         plot.plot()
 
@@ -144,13 +145,16 @@ class metrica:
 if __name__ == '__main__':
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    prev_level_path = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), '../..'))
 
-    metrica_path = os.path.join(prev_level_path, 'Metrica/sample-data/data/')
-    path_play_df = metrica_path+'metrica_tracking_tidy.csv'
-    path_event_df = metrica_path+'Sample_Game_1/Sample_Game_1_RawEventsData.csv'
+    """
+    Path to the game level data -
+    Use this Tidy data - https://drive.google.com/drive/folders/1BGLHbe7DB_NGZxitjJAQxu2-N-B4Zk3s
+    Credit - Eliot McKinley
+    """
+    path_game_df = sys.argv[1]
+    # Path to the event level data
+    path_events_df = sys.argv[2]
 
     game_id = '1'
-    metric = metrica(path_play_df, path_event_df, game_id)
+    metric = metrica(path_game_df, path_events_df, game_id)
     metric.process_data()

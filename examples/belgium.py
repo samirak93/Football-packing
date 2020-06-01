@@ -194,17 +194,21 @@ class belgium:
         receiver_xy = self.df[['receiver_x', 'receiver_y']].values[0]
 
         pack = packing(sender_xy, receiver_xy, self.def_team_xy_df,
-                       col_label_x='defender_team_x', col_label_y='defender_team_y', defend_side=self.defend_side)
+                       col_label_x='defender_team_x', col_label_y='defender_team_y',
+                       defend_side=self.defend_side)
         self.packing_df, self.packing_rate, self.pass_pressure = pack.get_packing()
-        print(self.packing_df)
+
         passing_team_xy = pd.DataFrame({'passer_team_x': self.df['passer_team_x'].tolist()[0],
                                         'passer_team_y': self.df['passer_team_y'].tolist()[0],
                                         'passer_team_id': self.df['passer_team_id'].tolist()[0]})
 
-        plot = plot_packing(passer_team_df=passing_team_xy, packing_df=self.packing_df, col_label_x='defender_team_x',
-                            col_label_y='defender_team_y', packing_rate=self.packing_rate, pass_pressure=self.pass_pressure,
-                            sender_xy=sender_xy, receiver_xy=receiver_xy, x_range=[-5250, 5250], y_range=[3400, -3400],
-                            path_to_save=dir_path+'/', pass_frame=self.play_id, file_name='belgium', plot_hint='on')
+        plot = plot_packing(passer_team_df=passing_team_xy, packing_df=self.packing_df,
+                            col_label_x='defender_team_x', col_label_y='defender_team_y',
+                            packing_rate=self.packing_rate, pass_pressure=self.pass_pressure,
+                            sender_xy=sender_xy, receiver_xy=receiver_xy,
+                            x_range=[-5250, 5250], y_range=[3400, -3400],
+                            path_to_save=dir_path+'/', pass_frame=self.play_id, file_name='belgium',
+                            bcg_img='/images/pitch/pitch.jpg')
         plot.plot()
 
     def execute_pack(self):
@@ -227,8 +231,7 @@ if __name__ == '__main__':
 
     df = df.loc[(df['pass_success'] == 1) & (df['sender_id'] !=
                                              df['receiver_id']), :].copy().reset_index(drop=True)
-    # df = df.sample(1).copy()
-    df = df.iloc[9499:9500, :].copy()
+    df = df.sample(1).copy()
     play_id = str(df.index.values[0])
     df = df.reset_index(drop=True)
     pack_belgium = belgium(df, play_id)
