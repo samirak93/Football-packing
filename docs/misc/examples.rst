@@ -29,7 +29,7 @@ The documentation can be found :ref:`under modules.<Visualize Packing>`
 
     import football_packing as fp
 
-    plot = plot_packing(passer_team_df=passing_team_xy, packing_df=packing_df,
+    plot = fp.plot_packing(passer_team_df=passing_team_xy, packing_df=packing_df,
                             col_label_x='defender_team_x', col_label_y='defender_team_y',
                             packing_rate=packing_rate, pass_pressure=pass_pressure,
                             sender_xy=sender_xy, receiver_xy=receiver_xy,

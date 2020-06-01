@@ -12,7 +12,7 @@ Install a specific version (where <VERSION> is something like '0.1') from PyPi:
 
 .. code-block:: bash
 
-   pip install football_packing==0.1
+   pip install football-packing
 
 or from GitHub:
 

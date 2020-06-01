@@ -6,8 +6,8 @@ def readme():
         return f.read()
 
 
-setup(name='Football Packing',
-      version='0.1',
+setup(name='football_packing',
+      version='0.2',
       description='Calculate the packing rate for a given pass in football (soccer)',
       long_description=readme(),
       url='https://github.com/samirak93/Football-packing',

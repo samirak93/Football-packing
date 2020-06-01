@@ -1,4 +1,4 @@
-### Football Packing
+Football Packing
 
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-red.svg)](https://www.python.org/downloads/release/python-370/)
 
@@ -24,7 +24,7 @@ multiplied with the packing value based on the type of pass.
 - For a side pass, multiplying factor is `0.5`.
 - For a forward pass, multiplying factor is `1`.
 
-#### Disclaimer
+**Disclaimer**
 
 The concept of packing belongs to [Impect](https://www.impect.com/) and I do not take credit for the metric.
 
