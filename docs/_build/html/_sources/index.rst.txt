@@ -11,7 +11,7 @@ The other difference would be the fact that for defenders, their lines on the pi
 to the pass direction. :ref:`Refer to the examples<Sample Scenarios>` on more details
 about these differences. 
 
-Traditionally, if a defender's line is cut by a pass, they're considered to be packed (+1 for that defender) 
+If a defender's line is cut by a pass, they're considered to be packed (+1 for that defender) 
 even if the defender is not near the line of pass (pass is on one 
 side of the pitch and defender is far away).So if an attacking player makes a long pass beyond the entire defense, 
 then all the defenders would be considered as packed (+1), but in truth only few of the players would be near the
